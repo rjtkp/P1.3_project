@@ -23,8 +23,8 @@ class BST{
     data.first stores the key.
     data.second stores the associated value.
     */
-    typedef std::unique_ptr<std::pair<K, V>> pair;
-    pair data;
+    /*typedef std::unique_ptr<std::pair<K, V>> pair; pair data;*/
+    std::pair<K, V> data;
     /** Left link of the current node in the BST. */
     std::unique_ptr<Node> left;
     /** Right link of the current node in the BST. */
@@ -77,24 +77,24 @@ int BST<K,V>::insert_node( const K& k, const V& v ){
 
 template <typename K, typename V>
 int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v){
-  if(k < tmp->data->first){
-    if(tmp->data->first == nullptr)
+  if(k < tmp->data.first){
+    if(tmp->left == nullptr)
       tmp->left.reset(new Node{k, v});
     else{
-      tmp = tmp->left;
+      tmp = tmp->left.get();
       BST::cmp_key(tmp, k, v);
     }
     return 1;
   }
-  else if (k == tmp->data->first){
-    tmp->data->second = v;
+  else if (k == tmp->data.first){
+    tmp->data.second = v;
     return 2; // should throw an exception
   }
   else{
-    if(tmp->data->first == nullptr)
+    if(tmp->right == nullptr)
       tmp->right.reset(new Node{k, v});
     else{
-      tmp = tmp->right;
+      tmp = tmp->right.get();
       BST::cmp_key(tmp, k, v);
     }
     return 1;
