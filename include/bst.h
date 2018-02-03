@@ -37,7 +37,10 @@ class BST{
      * It stores the input key and value into the templated std::pair data  and
      * and sets both the left and the right links to nullptr.
      */
-    Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {}// custom ctor
+    Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
+      //Iterator i {this};
+      //std::cout<< *i<< std::endl;
+    }// custom ctor
   }; // end of struct Node
 
   /** Unique ptr to the root node. The gateway to the BST. */
@@ -52,11 +55,68 @@ class BST{
 
 
     class Iterator;
-    //Iterator begin();
+    Iterator begin(); //{
+      // Node * tmp {root.get()};
+      // if(tmp!=nullptr){
+      //   while(tmp->left.get()!=nullptr)
+      //     tmp = tmp->left.get();
+      // }
+      // Iterator i {tmp};
+      // std::cout<< "Begin = " << *i << std::endl;
+      // return tmp;
+    //} // to be modified
+    Iterator end();
+    // ++it
+    Iterator& operator++() {
+      //current = current->next.get();
+      return *this;
+    }
+
+
 
 };
 /*END OF CLASS BST*/
 
+template <typename K, typename V>
+typename BST<K,V>::Iterator BST<K,V>::begin(){
+  using Node =  BST<K,V>::Node;
+  using Iterator =  BST<K,V>::Iterator;
+  Node * tmp {root.get()};
+  if(tmp!=nullptr){
+    while(tmp->left.get()!=nullptr)
+      tmp = tmp->left.get();
+  }
+  Iterator i {tmp};
+  std::cout<< "Begin = " << *i << std::endl;
+  return tmp;
+}
+
+template <typename K, typename V>
+typename BST<K,V>::Iterator BST<K,V>::end(){
+  using Node =  BST<K,V>::Node;
+  using Iterator =  BST<K,V>::Iterator;
+  Node * tmp {root.get()};
+  if(tmp!=nullptr){
+    while(tmp->right.get()!=nullptr)
+      tmp = tmp->right.get();
+  }
+  Iterator i {tmp};
+  std::cout<< "End = " << *i << std::endl;
+  return tmp;
+}
+
+
+/* BEGIN OF CLASS BST<K,V>::Iterator */
+template <typename K, typename V>
+class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag, V> {
+  using Node =  BST<K,V>::Node;
+  Node* current;
+
+ public:
+  Iterator(Node* n) : current{n} {}
+  V& operator*() const { return current->data.second; }
+
+};
 
 
 
@@ -64,12 +124,12 @@ class BST{
 
 template <typename K, typename V>
 int BST<K,V>::insert_node( const K& k, const V& v ){
-  if (this->root.get() == nullptr){
-    this->root.reset(new Node{k,v});
+  if (root.get() == nullptr){
+    root.reset(new Node{k,v});
     return 1;
   }
   else {
-    Node* tmp{this->root.get()};
+    Node* tmp{root.get()};
     int check = BST::cmp_key(tmp, k, v);
     return check;
   }
@@ -114,7 +174,6 @@ void BST<K,V>::populate_tree(){
     }
   }
 }
-
 
 
 
