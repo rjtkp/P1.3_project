@@ -109,7 +109,7 @@ void BST<K,V>::populate_tree(){
     std::stringstream ss(line);
     K k; V v;
     if (ss >> k >> v){
-        int check = BST::insert(k,v); // check error or throw exception. to be cmpleted
+        int check = BST::insert_node(k,v); // check error or throw exception. to be cmpleted
         std::cout << check << '\n';
     }
   }
