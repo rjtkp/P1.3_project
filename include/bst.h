@@ -30,17 +30,21 @@ class BST{
     /** Right link of the current node in the BST. */
     std::unique_ptr<Node> right;
     /** Up link of the current node. It stores the address of the last node passed form left. */
-    Node * up;
+    const Node * up;
 
 
     /** Plain "DWIM" ctor for a new Node.
      * It stores the input key and value into the templated std::pair data  and
      * and sets both the left and the right links to nullptr.
      */
-    Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
-      //Iterator i {this};
-      //std::cout<< *i<< std::endl;
-    }// custom ctor
+     Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
+       //Iterator i {this};
+       //std::cout<< *i<< std::endl;
+     }// custom ctor
+     Node(const K& k, const V& v, const Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
+       //Iterator i {this};
+       //std::cout<< *i<< std::endl;
+     }// custom ctor
   }; // end of struct Node
 
   /** Unique ptr to the root node. The gateway to the BST. */
@@ -50,7 +54,7 @@ class BST{
     /** Default ctor for a BST. It initializes a Tree with no nodes. */
     BST(): root{nullptr} {}
     int insert_node(const K& k, const V& v);
-    int cmp_key(Node * tmp, const K& k, const V& v);
+    int cmp_key(Node * tmp, const K& k, const V& v, const Node * tmpUp = nullptr);
     void populate_tree();
 
 
@@ -136,13 +140,14 @@ int BST<K,V>::insert_node( const K& k, const V& v ){
 }
 
 template <typename K, typename V>
-int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v){
+int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, const Node * tmpUp){
   if(k < tmp->data.first){
+    tmpUp = tmp;
     if(tmp->left == nullptr)
-      tmp->left.reset(new Node{k, v});
+      tmp->left.reset(new Node{k, v, tmpUp}); // costruttore con up!
     else{
       tmp = tmp->left.get();
-      BST::cmp_key(tmp, k, v);
+      BST::cmp_key(tmp, k, v, tmpUp);
     }
     return 1;
   }
@@ -152,10 +157,10 @@ int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v){
   }
   else{
     if(tmp->right == nullptr)
-      tmp->right.reset(new Node{k, v});
+      tmp->right.reset(new Node{k, v, tmpUp});
     else{
       tmp = tmp->right.get();
-      BST::cmp_key(tmp, k, v);
+      BST::cmp_key(tmp, k, v, tmpUp);
     }
     return 1;
   }
