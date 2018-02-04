@@ -12,6 +12,7 @@ int main(){
 
   BST<int, int> bst {};
   bst.populate_tree();
-
+  auto i = bst.begin();
+  auto k = bst.end();
   return 0;
 }
