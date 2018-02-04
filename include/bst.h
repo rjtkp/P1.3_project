@@ -38,12 +38,16 @@ class BST{
      * and sets both the left and the right links to nullptr.
      */
      Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
-       //Iterator i {this};
-       //std::cout<< *i<< std::endl;
+       /*
+       Iterator i {this};
+       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
+       */
      }// custom ctor
      Node(const K& k, const V& v, const Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
-       //Iterator i {this};
-       //std::cout<< *i<< std::endl;
+       /*
+       Iterator i {this};
+       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
+       */
      }// custom ctor
   }; // end of struct Node
 
@@ -73,6 +77,7 @@ class BST{
     // ++it
     Iterator& operator++() {
       //current = current->next.get();
+      if (this)
       return *this;
     }
 
@@ -80,6 +85,51 @@ class BST{
 
 };
 /*END OF CLASS BST*/
+
+
+/* BEGIN OF CLASS BST<K,V>::Iterator */
+template <typename K, typename V>
+class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag, V> {
+  using Node =  BST<K,V>::Node;
+  const Node* current;
+  const Node * begin(const Node * start);
+
+ public:
+  Iterator(const Node* n) : current{n} {}
+  const V& operator*() const { return current->data.second; }
+  const K& get_key() const { return current->data.first; }
+  // ++it
+  Iterator& operator++() {  // now take care of issues when calling operator++
+                            // on the node having the greatest key!
+    Node * tmp = current->right.get();
+    if( tmp!=nullptr )
+      current = BST<K,V>::Iterator::begin(tmp);
+    else
+      current = tmp->up;
+    return *this;
+  }
+};
+
+
+
+template <typename K, typename V>
+const typename BST<K,V>::Node * BST<K,V>::Iterator::begin( const  BST<K,V>::Node * start){
+  //using Node =  BST<K,V>::Node;
+  using Iterator =  BST<K,V>::Iterator;
+  //Node * tmp {root.get()};
+  //if(tmp!=nullptr){ // do error handling!!
+    while(start->left.get()!=nullptr)
+      start = start->left.get();
+  //}
+  Iterator i {start};
+  std::cout<< "Value of the leftmost node attached to the one in input  = " << *i << std::endl;
+  return start;
+}
+
+
+
+
+
 
 template <typename K, typename V>
 typename BST<K,V>::Iterator BST<K,V>::begin(){
@@ -110,17 +160,6 @@ typename BST<K,V>::Iterator BST<K,V>::end(){
 }
 
 
-/* BEGIN OF CLASS BST<K,V>::Iterator */
-template <typename K, typename V>
-class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag, V> {
-  using Node =  BST<K,V>::Node;
-  Node* current;
-
- public:
-  Iterator(Node* n) : current{n} {}
-  V& operator*() const { return current->data.second; }
-
-};
 
 
 
