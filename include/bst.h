@@ -38,12 +38,16 @@ class BST{
      * and sets both the left and the right links to nullptr.
      */
      Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
-       //Iterator i {this};
-       //std::cout<< *i<< std::endl;
+       /*
+       Iterator i {this};
+       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
+       */
      }// custom ctor
      Node(const K& k, const V& v, const Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
-       //Iterator i {this};
-       //std::cout<< *i<< std::endl;
+       /*
+       Iterator i {this};
+       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
+       */
      }// custom ctor
   }; // end of struct Node
 
@@ -73,6 +77,7 @@ class BST{
     // ++it
     Iterator& operator++() {
       //current = current->next.get();
+      if (this)
       return *this;
     }
 
@@ -119,6 +124,7 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
  public:
   Iterator(Node* n) : current{n} {}
   V& operator*() const { return current->data.second; }
+  K& get_key() const { return current->data.first; }
 
 };
 
