@@ -14,5 +14,8 @@ int main(){
   bst.populate_tree();
   auto i = bst.begin();
   auto k = bst.end();
+  ++i;
+
   return 0;
+
 }
