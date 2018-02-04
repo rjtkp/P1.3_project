@@ -14,6 +14,7 @@ int main(){
   bst.populate_tree();
   auto i = bst.begin();
   auto k = bst.end();
+std::cout<< "\nTry ++ operator: "<< std::endl;
   ++i;
   ++i;
   ++i;
@@ -23,7 +24,7 @@ int main(){
   ++i;
   ++i;
   ++i;
-  
+
 
   return 0;
 
