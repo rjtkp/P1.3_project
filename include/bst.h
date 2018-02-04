@@ -99,7 +99,8 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
   const V& operator*() const { return current->data.second; }
   const K& get_key() const { return current->data.first; }
   // ++it
-  Iterator& operator++() {
+  Iterator& operator++() {  // now take care of issues when calling operator++
+                            // on the node having the greatest key!
     Node * tmp = current->right.get();
     if( tmp!=nullptr )
       current = BST<K,V>::Iterator::begin(tmp);

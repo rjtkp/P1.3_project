@@ -15,6 +15,15 @@ int main(){
   auto i = bst.begin();
   auto k = bst.end();
   ++i;
+  ++i;
+  ++i;
+  ++i;
+  ++i;
+  ++i;
+  ++i;
+  ++i;
+  ++i;
+  
 
   return 0;
 
