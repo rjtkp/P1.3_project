@@ -1,7 +1,7 @@
 # Makefile for BST exam
 EXE=bst.x
 CFLAGS=-I ./include -ggdb -O3  -Wall -Wextra -std=c++11
-CXX=c++
+CXX=g++
 VPATH=.#:./src
 SRC=bst_main.cc
 OBJ=$(SRC:%.cc=%.o)

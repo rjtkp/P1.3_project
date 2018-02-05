@@ -53,9 +53,10 @@ int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v){
 template <typename K, typename V>
 void BST<K,V>::populate_tree(){
   std::string line;
+  std::ifstream openfile("example");
   while (std::getline(std::cin, line)){
     std::stringstream ss(line);
-    K k; V v;
+    K& k; V& v;
     if (ss >> k >> v){
         int check = BST::insert(k,v); // check error or throw exception. to be cmpleted
         std::cout << check << '\n';
