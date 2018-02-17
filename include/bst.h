@@ -30,7 +30,7 @@ class BST{
     /** Right link of the current node in the BST. */
     std::unique_ptr<Node> right;
     /** Up link of the current node. It stores the address of the last node passed form left. */
-    const Node * up;
+    Node * up;
 
 
     /** Plain "DWIM" ctor for a new Node.
@@ -43,11 +43,11 @@ class BST{
        std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
        */
      }// custom ctor
-     Node(const K& k, const V& v, const Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
-       /*
+     Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
+
        Iterator i {this};
-       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
-       */
+       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
+
      }// custom ctor
   }; // end of struct Node
 
@@ -58,7 +58,7 @@ class BST{
     /** Default ctor for a BST. It initializes a Tree with no nodes. */
     BST(): root{nullptr} {}
     int insert_node(const K& k, const V& v);
-    int cmp_key(Node * tmp, const K& k, const V& v, const Node * tmpUp = nullptr);
+    int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
     void populate_tree();
 
 
@@ -75,11 +75,11 @@ class BST{
     //} // to be modified
     Iterator end();
     // ++it
-    Iterator& operator++() {
+    //Iterator& operator++(); //{
       //current = current->next.get();
-      if (this)
-      return *this;
-    }
+      //if (this)
+      //return *this;
+    //}
 
 
 
@@ -91,21 +91,27 @@ class BST{
 template <typename K, typename V>
 class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag, V> {
   using Node =  BST<K,V>::Node;
-  const Node* current;
-  const Node * begin(const Node * start);
+  Node* current;
+  Node * begin(Node * start);
 
  public:
-  Iterator(const Node* n) : current{n} {}
-  const V& operator*() const { return current->data.second; }
-  const K& get_key() const { return current->data.first; }
+  Iterator(Node* n) : current{n} {}
+  V& operator*() const { return current->data.second; }
+  K& get_key() const { return current->data.first; }
   // ++it
   Iterator& operator++() {  // now take care of issues when calling operator++
                             // on the node having the greatest key!
     Node * tmp = current->right.get();
-    if( tmp!=nullptr )
+    std::cout<< "defined tmp"<<std::endl;
+    if( tmp!=nullptr ){
+      std::cout<< "if tmp!=nullptr "<<std::endl;
       current = BST<K,V>::Iterator::begin(tmp);
-    else
-      current = tmp->up;
+      std::cout<< "if tmp!=nullptr "<<std::endl;
+    }
+    else{
+      current = current->up;
+      std::cout<< "else "<<std::endl;
+    }
     return *this;
   }
 };
@@ -113,17 +119,18 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
 
 
 template <typename K, typename V>
-const typename BST<K,V>::Node * BST<K,V>::Iterator::begin( const  BST<K,V>::Node * start){
+typename BST<K,V>::Node * BST<K,V>::Iterator::begin( BST<K,V>::Node * start){
   //using Node =  BST<K,V>::Node;
   using Iterator =  BST<K,V>::Iterator;
   //Node * tmp {root.get()};
   //if(tmp!=nullptr){ // do error handling!!
-    while(start->left.get()!=nullptr)
-      start = start->left.get();
+    Node * tmp = start;
+    while(tmp->left.get()!=nullptr)
+      tmp = tmp->left.get();
   //}
-  Iterator i {start};
+  Iterator i {tmp};
   std::cout<< "Value of the leftmost node attached to the one in input  = " << *i << std::endl;
-  return start;
+  return tmp;
 }
 
 
@@ -179,9 +186,10 @@ int BST<K,V>::insert_node( const K& k, const V& v ){
 }
 
 template <typename K, typename V>
-int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, const Node * tmpUp){
+int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
   if(k < tmp->data.first){
     tmpUp = tmp;
+    std::cout << "tmp= " << tmp << " tmpUp= " << tmpUp <<std::endl;
     if(tmp->left == nullptr)
       tmp->left.reset(new Node{k, v, tmpUp}); // costruttore con up!
     else{

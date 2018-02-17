@@ -14,16 +14,25 @@ int main(){
   bst.populate_tree();
   auto i = bst.begin();
   auto k = bst.end();
-std::cout<< "\nTry ++ operator: "<< std::endl;
+std::cout<< "i="<<*i<<"\nTry ++ operator: "<< std::endl;
   ++i;
+  std::cout<< "i="<<*i<<std::endl;
   ++i;
+  std::cout<< "i="<<*i<<std::endl;
   ++i;
+  std::cout<< "i="<<*i<<std::endl;
   ++i;
+  std::cout<< "i="<<*i<<std::endl;
   ++i;
+  std::cout<< "i="<<*i<<std::endl;
   ++i;
+  std::cout<< "i="<<*i<<std::endl;
   ++i;
+  std::cout<< "i="<<*i<<std::endl;
   ++i;
+  std::cout<< "i="<<*i<<std::endl;
   ++i;
+  std::cout<< "i="<<*i<<std::endl;
 
 
   return 0;
