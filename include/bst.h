@@ -77,10 +77,10 @@ class BST{
 
     class ConstIterator;
     ConstIterator begin() const;
-    //ConstIterator end() const { return ConstIterator{nullptr}; }
+    ConstIterator end() const;
 
-    //ConstIterator cbegin() const { return ConstIterator{head.get()}; }
-    //ConstIterator cend() const { return ConstIterator{nullptr}; }
+    ConstIterator cbegin() const;
+    ConstIterator cend() const;
 
 
 };
@@ -114,6 +114,50 @@ typename BST<K,V>::ConstIterator BST<K,V>::begin() const {
   return i;
 }
 
+
+template <typename K, typename V>
+typename BST<K,V>::ConstIterator BST<K,V>::end() const {
+  using Node =  BST<K,V>::Node;
+  using Iterator =  BST<K,V>::Iterator;
+  Node * tmp {root.get()};
+  if(tmp!=nullptr){
+    while(tmp->right.get()!=nullptr)
+      tmp = tmp->right.get();
+  }
+  Iterator i {tmp};
+  std::cout<< "End = " << *i << std::endl;
+  return i;
+}
+
+
+
+template <typename K, typename V>
+typename BST<K,V>::ConstIterator BST<K,V>::cbegin() const {
+  using Node =  BST<K,V>::Node;
+  using ConstIterator =  BST<K,V>::ConstIterator;
+  Node * tmp {root.get()};
+  if(tmp!=nullptr){
+    while(tmp->left.get()!=nullptr)
+      tmp = tmp->left.get();
+  }
+  ConstIterator i {tmp};
+  std::cout<< "ConstIterator Begin = " << *i << std::endl;
+  return i;
+}
+
+template <typename K, typename V>
+typename BST<K,V>::ConstIterator BST<K,V>::cend() const {
+  using Node =  BST<K,V>::Node;
+  using ConstIterator =  BST<K,V>::ConstIterator;
+  Node * tmp {root.get()};
+  if(tmp!=nullptr){
+    while(tmp->right.get()!=nullptr)
+      tmp = tmp->right.get();
+  }
+  ConstIterator i {tmp};
+  std::cout<< "ConstIterator End = " << *i << std::endl;
+  return i;
+}
 
 
 
@@ -162,7 +206,7 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
 template <typename K, typename V>
 typename BST<K,V>::Node * BST<K,V>::Iterator::begin( BST<K,V>::Node * start){
   //using Node =  BST<K,V>::Node;
-  using Iterator =  BST<K,V>::Iterator;
+  //using Iterator =  BST<K,V>::Iterator;
   //Node * tmp {root.get()};
   //if(tmp!=nullptr){ // do error handling!!
     Node * tmp = start;
@@ -209,7 +253,6 @@ typename BST<K,V>::Iterator BST<K,V>::end(){
 
 
 
-/* BEGIN OF CLASS BST<K,V>::ConstIterator */
 
 
 

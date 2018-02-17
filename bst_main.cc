@@ -14,10 +14,14 @@ int main(){
   bst.populate_tree();
   auto i = bst.begin();
   auto k = bst.end();
-  BST<int,int>::ConstIterator j = bst.begin();
-  //const auto l = bst.end();
-  std::cout<< "j="<<*j<<std::endl;
-  //std::cout<< "l="<<*j<<std::endl;
+  auto j = bst.cbegin();
+  auto l = bst.cend();
+  std::cout<< " ConstIterator cbegin j="<<*j<<std::endl;
+  std::cout<< "ConstIterator cend l="<<*l<<std::endl;
+
+  j++;
+  *i=20;
+  // *j=90; error: assignment of read-only location ‘j.BST<K, V>::ConstIterator::operator*<int, int>()’ *j=90;
 
 
   std::cout<< "i="<<*i<<"\nTry ++ operator: "<< std::endl;
