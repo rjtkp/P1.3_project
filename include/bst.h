@@ -12,6 +12,13 @@
 #include <sstream>
 
 
+
+/*
+TO DO: PRINT and FIX end and cend. Introduce functions last to pick up the last element
+*/
+
+
+
 /** Class Binary Search Tree (BST). Templated on both the key and the value stored in each node.
  */
 template <typename K, typename V>
