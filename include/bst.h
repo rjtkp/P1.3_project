@@ -74,12 +74,6 @@ class BST{
       // return tmp;
     //} // to be modified
     Iterator end();
-    // ++it
-    //Iterator& operator++(); //{
-      //current = current->next.get();
-      //if (this)
-      //return *this;
-    //}
 
 
 
@@ -110,8 +104,20 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
     }
     return *this;
   }
-};
 
+  Iterator operator++(int) {  // now take care of issues when calling operator++
+                            // on the node having the greatest key!
+    Iterator it{current};
+    ++(*this);
+    return it;
+  }
+
+  bool operator==(const Iterator& other) {
+    return this->current->data.second == other.current->data.second;
+  }
+
+
+};
 
 
 template <typename K, typename V>

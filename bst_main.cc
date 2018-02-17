@@ -20,6 +20,10 @@ std::cout<< "i="<<*i<<"\nTry ++ operator: "<< std::endl;
   ++i;
   std::cout<< "i="<<*i<<std::endl;
   ++i;
+
+  bool eq = i==k;
+  std::cout << "i==k is " << eq << std::endl;
+
   std::cout<< "i="<<*i<<std::endl;
   ++i;
   std::cout<< "i="<<*i<<std::endl;
@@ -29,11 +33,13 @@ std::cout<< "i="<<*i<<"\nTry ++ operator: "<< std::endl;
   std::cout<< "i="<<*i<<std::endl;
   ++i;
   std::cout<< "i="<<*i<<std::endl;
-  ++i;
+  i++;
   std::cout<< "i="<<*i<<std::endl;
-  ++i;
+  i++;
   std::cout<< "i="<<*i<<std::endl;
 
+  eq = i==k;
+  std::cout << "i==k is " << eq << std::endl;
 
   return 0;
 
