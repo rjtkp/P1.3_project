@@ -116,6 +116,8 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
     return this->current->data.second == other.current->data.second;
   }
 
+  bool operator!=(const Iterator& other) { return !(*this == other); }
+
 
 };
 
