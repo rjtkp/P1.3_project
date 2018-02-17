@@ -44,10 +44,10 @@ class BST{
        */
      }// custom ctor
      Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
-
+       /*
        Iterator i {this};
        std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
-
+       */
      }// custom ctor
   }; // end of struct Node
 
@@ -102,15 +102,11 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
   Iterator& operator++() {  // now take care of issues when calling operator++
                             // on the node having the greatest key!
     Node * tmp = current->right.get();
-    std::cout<< "defined tmp"<<std::endl;
     if( tmp!=nullptr ){
-      std::cout<< "if tmp!=nullptr "<<std::endl;
       current = BST<K,V>::Iterator::begin(tmp);
-      std::cout<< "if tmp!=nullptr "<<std::endl;
     }
     else{
       current = current->up;
-      std::cout<< "else "<<std::endl;
     }
     return *this;
   }
@@ -129,7 +125,7 @@ typename BST<K,V>::Node * BST<K,V>::Iterator::begin( BST<K,V>::Node * start){
       tmp = tmp->left.get();
   //}
   Iterator i {tmp};
-  std::cout<< "Value of the leftmost node attached to the one in input  = " << *i << std::endl;
+  //std::cout<< "Value of the leftmost node attached to the one in input  = " << *i << std::endl;
   return tmp;
 }
 
@@ -189,7 +185,7 @@ template <typename K, typename V>
 int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
   if(k < tmp->data.first){
     tmpUp = tmp;
-    std::cout << "tmp= " << tmp << " tmpUp= " << tmpUp <<std::endl;
+    //std::cout << "tmp= " << tmp << " tmpUp= " << tmpUp <<std::endl;
     if(tmp->left == nullptr)
       tmp->left.reset(new Node{k, v, tmpUp}); // costruttore con up!
     else{
@@ -222,7 +218,7 @@ void BST<K,V>::populate_tree(){
     K k; V v;
     if (ss >> k >> v){
         int check = BST::insert_node(k,v); // check error or throw exception. to be cmpleted
-        std::cout << check << '\n';
+        //std::cout << check << '\n';
     }
   }
 }
