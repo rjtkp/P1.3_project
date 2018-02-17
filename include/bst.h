@@ -75,10 +75,47 @@ class BST{
     //} // to be modified
     Iterator end();
 
+    class ConstIterator;
+    ConstIterator begin() const;
+    //ConstIterator end() const { return ConstIterator{nullptr}; }
+
+    //ConstIterator cbegin() const { return ConstIterator{head.get()}; }
+    //ConstIterator cend() const { return ConstIterator{nullptr}; }
 
 
 };
 /*END OF CLASS BST*/
+
+
+/* BEGIN OF CLASS BST<K,V>::ConstIterator */
+template <typename K, typename V>
+class BST<K,V>::ConstIterator : public BST<K,V>::Iterator {
+  using parent = BST<K,V>::Iterator;
+
+ public:
+  using parent::Iterator; // inher ctor
+  const V& operator*() const { return parent::operator*(); }
+  const K& get_key() const {return parent::get_key();}
+};
+
+
+
+template <typename K, typename V>
+typename BST<K,V>::ConstIterator BST<K,V>::begin() const {
+  using Node =  BST<K,V>::Node;
+  using ConstIterator =  BST<K,V>::ConstIterator;
+  Node * tmp {root.get()};
+  if(tmp!=nullptr){
+    while(tmp->left.get()!=nullptr)
+      tmp = tmp->left.get();
+  }
+  ConstIterator i {tmp};
+  std::cout<< "ConstIterator Begin = " << *i << std::endl;
+  return i;
+}
+
+
+
 
 
 /* BEGIN OF CLASS BST<K,V>::Iterator */
@@ -132,7 +169,7 @@ typename BST<K,V>::Node * BST<K,V>::Iterator::begin( BST<K,V>::Node * start){
     while(tmp->left.get()!=nullptr)
       tmp = tmp->left.get();
   //}
-  Iterator i {tmp};
+  //Iterator i {tmp};
   //std::cout<< "Value of the leftmost node attached to the one in input  = " << *i << std::endl;
   return tmp;
 }
@@ -153,7 +190,7 @@ typename BST<K,V>::Iterator BST<K,V>::begin(){
   }
   Iterator i {tmp};
   std::cout<< "Begin = " << *i << std::endl;
-  return tmp;
+  return i;
 }
 
 template <typename K, typename V>
@@ -167,8 +204,20 @@ typename BST<K,V>::Iterator BST<K,V>::end(){
   }
   Iterator i {tmp};
   std::cout<< "End = " << *i << std::endl;
-  return tmp;
+  return i;
 }
+
+
+
+/* BEGIN OF CLASS BST<K,V>::ConstIterator */
+
+
+
+
+
+
+
+
 
 
 

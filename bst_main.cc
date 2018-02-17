@@ -14,7 +14,13 @@ int main(){
   bst.populate_tree();
   auto i = bst.begin();
   auto k = bst.end();
-std::cout<< "i="<<*i<<"\nTry ++ operator: "<< std::endl;
+  BST<int,int>::ConstIterator j = bst.begin();
+  //const auto l = bst.end();
+  std::cout<< "j="<<*j<<std::endl;
+  //std::cout<< "l="<<*j<<std::endl;
+
+
+  std::cout<< "i="<<*i<<"\nTry ++ operator: "<< std::endl;
   ++i;
   std::cout<< "i="<<*i<<std::endl;
   ++i;
