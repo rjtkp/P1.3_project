@@ -12,10 +12,27 @@ int main(){
 
   BST<int, int> bst {};
   bst.populate_tree();
-  auto i = bst.begin();
+  /*auto i = bst.begin();
   auto k = bst.end();
   auto j = bst.cbegin();
   auto l = bst.cend();
+*/
+
+auto it = bst.cbegin();
+auto it_end = bst.cend();
+for (; it != it_end; ++it){
+  std::cout << *it << std::endl;
+}
+
+
+  for (const auto& x : bst)
+    std::cout << x << std::endl;
+
+  std::cout << "/* message */" << std::endl;
+  bst.print_tree();
+
+
+/*
   std::cout<< " ConstIterator cbegin j="<<*j<<std::endl;
   std::cout<< "ConstIterator cend l="<<*l<<std::endl;
 
@@ -54,7 +71,7 @@ int main(){
   neq = i!=k;
   std::cout << "i==k is " << eq << std::endl;
   std::cout << "i!=k is " << neq << std::endl;
-
+*/
   return 0;
 
 }

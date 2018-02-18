@@ -67,7 +67,7 @@ class BST{
     int insert_node(const K& k, const V& v);
     int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
     void populate_tree();
-
+    void print_tree();
 
     class Iterator;
     Iterator begin(); //{
@@ -80,14 +80,14 @@ class BST{
       // std::cout<< "Begin = " << *i << std::endl;
       // return tmp;
     //} // to be modified
-    Iterator end();
+    Iterator end() { return Iterator{nullptr}; };
 
     class ConstIterator;
     ConstIterator begin() const;
-    ConstIterator end() const;
+    ConstIterator end() const { return ConstIterator{nullptr}; }
 
-    ConstIterator cbegin() const;
-    ConstIterator cend() const;
+    ConstIterator cbegin() const ;
+    ConstIterator cend() const { return ConstIterator{nullptr}; }
 
 
 };
@@ -121,7 +121,7 @@ typename BST<K,V>::ConstIterator BST<K,V>::begin() const {
   return i;
 }
 
-
+/*
 template <typename K, typename V>
 typename BST<K,V>::ConstIterator BST<K,V>::end() const {
   using Node =  BST<K,V>::Node;
@@ -135,7 +135,7 @@ typename BST<K,V>::ConstIterator BST<K,V>::end() const {
   std::cout<< "End = " << *i << std::endl;
   return i;
 }
-
+*/
 
 
 template <typename K, typename V>
@@ -152,6 +152,7 @@ typename BST<K,V>::ConstIterator BST<K,V>::cbegin() const {
   return i;
 }
 
+/*
 template <typename K, typename V>
 typename BST<K,V>::ConstIterator BST<K,V>::cend() const {
   using Node =  BST<K,V>::Node;
@@ -165,7 +166,7 @@ typename BST<K,V>::ConstIterator BST<K,V>::cend() const {
   std::cout<< "ConstIterator End = " << *i << std::endl;
   return i;
 }
-
+*/
 
 
 
@@ -201,8 +202,12 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
   }
 
   bool operator==(const Iterator& other) {
-    return this->current->data.second == other.current->data.second;
+    return this->current == other.current;
   }
+   /* bool operator==(const Iterator& other) {
+     return this->current->data.second == other.current->data.second;
+   }
+   */
 
   bool operator!=(const Iterator& other) { return !(*this == other); }
 
@@ -243,7 +248,7 @@ typename BST<K,V>::Iterator BST<K,V>::begin(){
   std::cout<< "Begin = " << *i << std::endl;
   return i;
 }
-
+/*
 template <typename K, typename V>
 typename BST<K,V>::Iterator BST<K,V>::end(){
   using Node =  BST<K,V>::Node;
@@ -257,7 +262,7 @@ typename BST<K,V>::Iterator BST<K,V>::end(){
   std::cout<< "End = " << *i << std::endl;
   return i;
 }
-
+*/
 
 
 
@@ -315,6 +320,16 @@ int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
     return 1;
   }
 }
+
+
+
+template <typename K, typename V>
+void BST<K,V>::print_tree(){
+  for (const auto& x : *this)
+    std::cout << x << std::endl;
+
+}
+
 
 
 template <typename K, typename V>
