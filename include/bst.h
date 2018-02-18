@@ -204,7 +204,9 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
   bool operator==(const Iterator& other) {
     return this->current == other.current;
   }
-   /* bool operator==(const Iterator& other) {
+   /* The following is wrong. You're comparing iterators, not hte data holded by them
+      These data may not exist (eg if Iterator == Iterator{nullptr})
+   bool operator==(const Iterator& other) {
      return this->current->data.second == other.current->data.second;
    }
    */

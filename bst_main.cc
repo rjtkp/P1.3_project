@@ -12,11 +12,12 @@ int main(){
 
   BST<int, int> bst {};
   bst.populate_tree();
-  /*auto i = bst.begin();
+  /*
+  auto i = bst.begin();
   auto k = bst.end();
   auto j = bst.cbegin();
   auto l = bst.cend();
-*/
+  */
 
 auto it = bst.cbegin();
 auto it_end = bst.cend();
@@ -24,6 +25,7 @@ for (; it != it_end; ++it){
   std::cout << *it << std::endl;
 }
 
+  bst.insert_node(100,100);
 
   for (const auto& x : bst)
     std::cout << x << std::endl;
@@ -32,7 +34,7 @@ for (; it != it_end; ++it){
   bst.print_tree();
 
 
-/*
+  /*
   std::cout<< " ConstIterator cbegin j="<<*j<<std::endl;
   std::cout<< "ConstIterator cend l="<<*l<<std::endl;
 
