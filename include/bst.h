@@ -84,7 +84,7 @@ public:
   int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
   void populate_tree();
   void populate_tree(std::istream& i_str);
-  // void insert_nodes(std::istream& i_str); // populate_tree(istream&) makes the same job 
+  // void insert_nodes(std::istream& i_str); // populate_tree(istream&) makes the same job
   void print_tree();
   void balance_tree();
 
@@ -194,7 +194,7 @@ template <typename K, typename V>
 class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag, V> {
   using Node =  BST<K,V>::Node;
   Node* current;
-  Node * begin(Node * start);
+  Node * get_leftmost(Node * start);
 
 public:
   Iterator(Node* n) : current{n} {}
@@ -205,7 +205,7 @@ public:
     // on the node having the greatest key!
     Node * tmp = current->right.get();
     if( tmp!=nullptr ){
-      current = BST<K,V>::Iterator::begin(tmp);
+      current = BST<K,V>::Iterator::get_leftmost(tmp);
     }
     else{
       current = current->up;
@@ -237,7 +237,7 @@ bool operator!=(const Iterator& other) { return !(*this == other); }
 
 
 template <typename K, typename V>
-typename BST<K,V>::Node * BST<K,V>::Iterator::begin( BST<K,V>::Node * start){
+typename BST<K,V>::Node * BST<K,V>::Iterator::get_leftmost( BST<K,V>::Node * start){
   //using Node =  BST<K,V>::Node;
   //using Iterator =  BST<K,V>::Iterator;
   //Node * tmp {root.get()};
