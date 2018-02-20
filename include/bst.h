@@ -84,6 +84,7 @@ public:
   int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
   void populate_tree();
   void populate_tree(std::istream& i_str);
+  // void insert_nodes(std::istream& i_str); // populate_tree(istream&) makes the same job 
   void print_tree();
   void balance_tree();
 
@@ -312,6 +313,24 @@ int BST<K,V>::insert_node( const K& k, const V& v ){
     return check;
   }
 }
+
+
+/* populate_tree(istream&) makes the same job
+template <typename K, typename V>
+int BST<K,V>::insert_nodes(std::istream& i_str ){
+  if (root.get() == nullptr){
+    root.reset(new Node{k,v});
+    return 1;
+  }
+  else {
+    Node* tmp{root.get()};
+    int check = BST::cmp_key(tmp, k, v);
+    return check;
+  }
+}
+*/
+
+
 
 template <typename K, typename V>
 int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
