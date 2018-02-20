@@ -10,8 +10,12 @@
 
 int main(){
 
+
+
+
   BST<int, int> bst {};
-  bst.populate_tree();
+  bst.populate_tree(); // read automatically from std::cin
+  //bst.populate_tree(std::cin); // read from a specified istream
   /*
   auto i = bst.begin();
   auto k = bst.end();
