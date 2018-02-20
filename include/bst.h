@@ -83,6 +83,7 @@ public:
   int insert_node(const K& k, const V& v);
   int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
   void populate_tree();
+  void populate_tree(std::istream i_str);
   void print_tree();
   void balance_tree();
 
@@ -394,6 +395,21 @@ void BST<K,V>::populate_tree(){
     }
   }
 }
+
+
+template <typename K, typename V>
+void BST<K,V>::populate_tree(std::istream i_str){
+  std::string line;
+  while (std::getline(i_str, line)){
+    std::stringstream ss(line);
+    K k; V v;
+    if (ss >> k >> v){
+      int check = BST::insert_node(k,v); // check error or throw exception. to be cmpleted
+      //std::cout << check << '\n';
+    }
+  }
+}
+
 
 
 
