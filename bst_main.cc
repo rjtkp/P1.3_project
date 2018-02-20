@@ -25,6 +25,7 @@ for (; it != it_end; ++it){
   std::cout << *it << std::endl;
 }
 
+  bst.insert_node(0,0);
   bst.insert_node(100,100);
 
   for (const auto& x : bst)
