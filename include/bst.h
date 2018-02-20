@@ -21,16 +21,6 @@
 TO DO: Introduce functions last to pick up the last element.
 */
 
-template <typename K>
-bool check_eq_keys(const K& a, const K& b){
-  if (a==b) return true;
-  else return false;
-}
-
-bool check_eq_keys(const double& a, const double& b){
-  if ( fabs(a-b)< TOL ) return true;
-  else return false;
-}
 
 
 /** Class Binary Search Tree (BST). Templated on both the key and the value stored in each node.
