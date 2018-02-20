@@ -195,6 +195,7 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
   using Node =  BST<K,V>::Node;
   Node* current;
   Node * get_leftmost(Node * start);
+  Node * get_rightmost(Node * start);
 
 public:
   Iterator(Node* n) : current{n} {}
@@ -250,6 +251,33 @@ typename BST<K,V>::Node * BST<K,V>::Iterator::get_leftmost( BST<K,V>::Node * sta
   //std::cout<< "Value of the leftmost node attached to the one in input  = " << *i << std::endl;
   return tmp;
 }
+
+
+
+
+
+
+
+
+
+
+template <typename K, typename V>
+typename BST<K,V>::Node * BST<K,V>::Iterator::get_rightmost( BST<K,V>::Node * start){
+  //using Node =  BST<K,V>::Node;
+  //using Iterator =  BST<K,V>::Iterator;
+  //Node * tmp {root.get()};
+  //if(tmp!=nullptr){ // do error handling!!
+  Node * tmp = start;
+  while(tmp->right.get()!=nullptr)
+  tmp = tmp->right.get();
+  //}
+  //Iterator i {tmp};
+  //std::cout<< "Value of the rightmost node attached to the one in input  = " << *i << std::endl;
+  return tmp;
+}
+
+
+
 
 
 
