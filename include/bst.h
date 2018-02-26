@@ -87,6 +87,7 @@ public:
   // void insert_nodes(std::istream& i_str); // populate_tree(istream&) makes the same job
   void print_tree();
   void balance_tree();
+  void erase_tree();
 
   class Iterator;
   Iterator begin(); //{
@@ -107,7 +108,7 @@ public:
 
     ConstIterator cbegin() const ;
     ConstIterator cend() const { return ConstIterator{nullptr}; }
-
+    
 
   };
   /*END OF CLASS BST*/
@@ -325,6 +326,10 @@ return i;
 
 
 
+template <typename K, typename V>
+void BST<K,V>::erase_tree(){
+  root.reset();
+}
 
 
 

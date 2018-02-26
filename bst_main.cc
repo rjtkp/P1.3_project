@@ -40,7 +40,7 @@ for (; it != it_end; ++it){
 
   std::cout << "/* message */" << std::endl;
   bst.print_tree();
-
+  bst.erase_tree();
 
   /*
   std::cout<< " ConstIterator cbegin j="<<*j<<std::endl;
