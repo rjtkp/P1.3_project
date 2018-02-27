@@ -22,7 +22,6 @@ TO DO: Introduce functions last to pick up the last element.
 */
 
 
-
 /** Class Binary Search Tree (BST). Templated on both the key and the value stored in each node.
 */
 template <typename K, typename V>
@@ -253,15 +252,6 @@ typename BST<K,V>::Node * BST<K,V>::Iterator::get_leftmost( BST<K,V>::Node * sta
   return tmp;
 }
 
-
-
-
-
-
-
-
-
-
 template <typename K, typename V>
 typename BST<K,V>::Node * BST<K,V>::Iterator::get_rightmost( BST<K,V>::Node * start){
   //using Node =  BST<K,V>::Node;
@@ -276,14 +266,6 @@ typename BST<K,V>::Node * BST<K,V>::Iterator::get_rightmost( BST<K,V>::Node * st
   //std::cout<< "Value of the rightmost node attached to the one in input  = " << *i << std::endl;
   return tmp;
 }
-
-
-
-
-
-
-
-
 
 template <typename K, typename V>
 typename BST<K,V>::Iterator BST<K,V>::begin(){
@@ -315,24 +297,10 @@ return i;
 */
 
 
-
-
-
-
-
-
-
-
-
-
-
 template <typename K, typename V>
 void BST<K,V>::erase_tree(){
   root.reset();
 }
-
-
-
 
 template <typename K, typename V>
 int BST<K,V>::insert_node( const K& k, const V& v ){
@@ -346,7 +314,6 @@ int BST<K,V>::insert_node( const K& k, const V& v ){
     return check;
   }
 }
-
 
 /* populate_tree(istream&) makes the same job
 template <typename K, typename V>
@@ -362,7 +329,6 @@ int BST<K,V>::insert_nodes(std::istream& i_str ){
   }
 }
 */
-
 
 
 template <typename K, typename V>
@@ -403,36 +369,10 @@ void BST<K,V>::print_tree(){
 }
 
 
-
 template <typename K, typename V>
 void BST<K,V>::balance_tree(){
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 template <typename K, typename V>
@@ -461,23 +401,5 @@ void BST<K,V>::populate_tree(std::istream& i_str){
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif
