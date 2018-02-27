@@ -33,36 +33,21 @@ class BST{
     data.first stores the key.
     data.second stores the associated value.
     */
-    /*typedef std::unique_ptr<std::pair<K, V>> pair; pair data;*/
     std::pair<K, V> data;
-    /** Left link of the current node in the BST. */
-    std::unique_ptr<Node> left;
-    /** Right link of the current node in the BST. */
-    std::unique_ptr<Node> right;
-    /** Up link of the current node. It stores the address of the last node passed form left. */
-    Node * up;
-
+    std::unique_ptr<Node> left; /** Left link of the current node in the BST. */
+    std::unique_ptr<Node> right; /** Right link of the current node in the BST. */
+    Node * up; /** Up link of the current node. It stores the address of the last node passed form left. */
 
     /** Plain "DWIM" ctor for a new Node.
     * It stores the input key and value into the templated std::pair data  and
     * and sets both the left and the right links to nullptr.
     */
-    Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
-      /*
-      Iterator i {this};
-      std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
-      */
-    }// custom ctor
-    Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
-      /*
-      Iterator i {this};
-      std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
-      */
-    }// custom ctor
+    Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {}// custom ctor
+    Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {}// custom ctor
   }; // end of struct Node
 
-  /** Unique ptr to the root node. The gateway to the BST. */
-  std::unique_ptr<Node> root;
+
+  std::unique_ptr<Node> root; /** Unique ptr to the root node. The gateway to the BST. */
 
 
   bool check_eq_keys(const K& a, const K& b){
@@ -89,28 +74,19 @@ public:
   void erase_tree();
 
   class Iterator;
-  Iterator begin(); //{
-    // Node * tmp {root.get()};
-    // if(tmp!=nullptr){
-    //   while(tmp->left.get()!=nullptr)
-    //     tmp = tmp->left.get();
-    // }
-    // Iterator i {tmp};
-    // std::cout<< "Begin = " << *i << std::endl;
-    // return tmp;
-    //} // to be modified
-    Iterator end() { return Iterator{nullptr}; };
+  Iterator begin();
+  Iterator end() { return Iterator{nullptr}; };
 
-    class ConstIterator;
-    ConstIterator begin() const;
-    ConstIterator end() const { return ConstIterator{nullptr}; }
+  class ConstIterator;
+  ConstIterator begin() const;
+  ConstIterator end() const { return ConstIterator{nullptr}; }
 
-    ConstIterator cbegin() const ;
-    ConstIterator cend() const { return ConstIterator{nullptr}; }
+  ConstIterator cbegin() const ;
+  ConstIterator cend() const { return ConstIterator{nullptr}; }
 
 
-  };
-  /*END OF CLASS BST*/
+  }; /*END OF CLASS BST*/
+
 
 
   /* BEGIN OF CLASS BST<K,V>::ConstIterator */
