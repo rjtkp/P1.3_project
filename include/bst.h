@@ -2,6 +2,10 @@
 #ifndef __BST_H__
 #define __BST_H__
 
+#ifndef TOL
+#define TOL 0.000001
+#endif
+
 #include <iostream> // I/O
 #include <memory> // smart pointers
 #include <utility> // std::pair
@@ -10,17 +14,17 @@
 #include <ap_error.h> // error handling
 #include <string>
 #include <sstream>
-
+#include <cmath>
 
 
 /*
-TO DO: PRINT and FIX end and cend. Introduce functions last to pick up the last element
+TO DO: Introduce functions last to pick up the last element.
 */
 
 
 
 /** Class Binary Search Tree (BST). Templated on both the key and the value stored in each node.
- */
+*/
 template <typename K, typename V>
 class BST{
   /** Struct Node: the fundamental brick in a BST which registers a pair (K, V).  */
@@ -41,44 +45,60 @@ class BST{
 
 
     /** Plain "DWIM" ctor for a new Node.
-     * It stores the input key and value into the templated std::pair data  and
-     * and sets both the left and the right links to nullptr.
-     */
-     Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
-       /*
-       Iterator i {this};
-       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
-       */
-     }// custom ctor
-     Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
-       /*
-       Iterator i {this};
-       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
-       */
-     }// custom ctor
+    * It stores the input key and value into the templated std::pair data  and
+    * and sets both the left and the right links to nullptr.
+    */
+    Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
+      /*
+      Iterator i {this};
+      std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
+      */
+    }// custom ctor
+    Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
+      /*
+      Iterator i {this};
+      std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
+      */
+    }// custom ctor
   }; // end of struct Node
 
   /** Unique ptr to the root node. The gateway to the BST. */
   std::unique_ptr<Node> root;
 
-  public:
-    /** Default ctor for a BST. It initializes a Tree with no nodes. */
-    BST(): root{nullptr} {}
-    int insert_node(const K& k, const V& v);
-    int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
-    void populate_tree();
-    void print_tree();
 
-    class Iterator;
-    Iterator begin(); //{
-      // Node * tmp {root.get()};
-      // if(tmp!=nullptr){
-      //   while(tmp->left.get()!=nullptr)
-      //     tmp = tmp->left.get();
-      // }
-      // Iterator i {tmp};
-      // std::cout<< "Begin = " << *i << std::endl;
-      // return tmp;
+  bool check_eq_keys(const K& a, const K& b){
+    if (a==b) return true;
+    else return false;
+  }
+
+  bool check_eq_keys(const double& a, const double& b){
+    if ( fabs(a-b)< TOL ) return true;
+    else return false;
+  }
+
+
+public:
+  /** Default ctor for a BST. It initializes a Tree with no nodes. */
+  BST(): root{nullptr} {}
+  int insert_node(const K& k, const V& v);
+  int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
+  void populate_tree();
+  void populate_tree(std::istream& i_str);
+  // void insert_nodes(std::istream& i_str); // populate_tree(istream&) makes the same job
+  void print_tree();
+  void balance_tree();
+  void erase_tree();
+
+  class Iterator;
+  Iterator begin(); //{
+    // Node * tmp {root.get()};
+    // if(tmp!=nullptr){
+    //   while(tmp->left.get()!=nullptr)
+    //     tmp = tmp->left.get();
+    // }
+    // Iterator i {tmp};
+    // std::cout<< "Begin = " << *i << std::endl;
+    // return tmp;
     //} // to be modified
     Iterator end() { return Iterator{nullptr}; };
 
@@ -90,50 +110,50 @@ class BST{
     ConstIterator cend() const { return ConstIterator{nullptr}; }
 
 
-};
-/*END OF CLASS BST*/
+  };
+  /*END OF CLASS BST*/
 
 
-/* BEGIN OF CLASS BST<K,V>::ConstIterator */
-template <typename K, typename V>
-class BST<K,V>::ConstIterator : public BST<K,V>::Iterator {
-  using parent = BST<K,V>::Iterator;
+  /* BEGIN OF CLASS BST<K,V>::ConstIterator */
+  template <typename K, typename V>
+  class BST<K,V>::ConstIterator : public BST<K,V>::Iterator {
+    using parent = BST<K,V>::Iterator;
 
- public:
-  using parent::Iterator; // inher ctor
-  const V& operator*() const { return parent::operator*(); }
-  const K& get_key() const {return parent::get_key();}
-};
+  public:
+    using parent::Iterator; // inher ctor
+    const V& operator*() const { return parent::operator*(); }
+    const K& get_key() const {return parent::get_key();}
+  };
 
 
 
-template <typename K, typename V>
-typename BST<K,V>::ConstIterator BST<K,V>::begin() const {
-  using Node =  BST<K,V>::Node;
-  using ConstIterator =  BST<K,V>::ConstIterator;
-  Node * tmp {root.get()};
-  if(tmp!=nullptr){
-    while(tmp->left.get()!=nullptr)
+  template <typename K, typename V>
+  typename BST<K,V>::ConstIterator BST<K,V>::begin() const {
+    using Node =  BST<K,V>::Node;
+    using ConstIterator =  BST<K,V>::ConstIterator;
+    Node * tmp {root.get()};
+    if(tmp!=nullptr){
+      while(tmp->left.get()!=nullptr)
       tmp = tmp->left.get();
+    }
+    ConstIterator i {tmp};
+    std::cout<< "ConstIterator Begin = " << *i << std::endl;
+    return i;
   }
-  ConstIterator i {tmp};
-  std::cout<< "ConstIterator Begin = " << *i << std::endl;
-  return i;
-}
 
-/*
-template <typename K, typename V>
-typename BST<K,V>::ConstIterator BST<K,V>::end() const {
+  /*
+  template <typename K, typename V>
+  typename BST<K,V>::ConstIterator BST<K,V>::end() const {
   using Node =  BST<K,V>::Node;
   using Iterator =  BST<K,V>::Iterator;
   Node * tmp {root.get()};
   if(tmp!=nullptr){
-    while(tmp->right.get()!=nullptr)
-      tmp = tmp->right.get();
-  }
-  Iterator i {tmp};
-  std::cout<< "End = " << *i << std::endl;
-  return i;
+  while(tmp->right.get()!=nullptr)
+  tmp = tmp->right.get();
+}
+Iterator i {tmp};
+std::cout<< "End = " << *i << std::endl;
+return i;
 }
 */
 
@@ -145,7 +165,7 @@ typename BST<K,V>::ConstIterator BST<K,V>::cbegin() const {
   Node * tmp {root.get()};
   if(tmp!=nullptr){
     while(tmp->left.get()!=nullptr)
-      tmp = tmp->left.get();
+    tmp = tmp->left.get();
   }
   ConstIterator i {tmp};
   std::cout<< "ConstIterator Begin = " << *i << std::endl;
@@ -155,16 +175,16 @@ typename BST<K,V>::ConstIterator BST<K,V>::cbegin() const {
 /*
 template <typename K, typename V>
 typename BST<K,V>::ConstIterator BST<K,V>::cend() const {
-  using Node =  BST<K,V>::Node;
-  using ConstIterator =  BST<K,V>::ConstIterator;
-  Node * tmp {root.get()};
-  if(tmp!=nullptr){
-    while(tmp->right.get()!=nullptr)
-      tmp = tmp->right.get();
-  }
-  ConstIterator i {tmp};
-  std::cout<< "ConstIterator End = " << *i << std::endl;
-  return i;
+using Node =  BST<K,V>::Node;
+using ConstIterator =  BST<K,V>::ConstIterator;
+Node * tmp {root.get()};
+if(tmp!=nullptr){
+while(tmp->right.get()!=nullptr)
+tmp = tmp->right.get();
+}
+ConstIterator i {tmp};
+std::cout<< "ConstIterator End = " << *i << std::endl;
+return i;
 }
 */
 
@@ -175,18 +195,19 @@ template <typename K, typename V>
 class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag, V> {
   using Node =  BST<K,V>::Node;
   Node* current;
-  Node * begin(Node * start);
+  Node * get_leftmost(Node * start);
+  Node * get_rightmost(Node * start);
 
- public:
+public:
   Iterator(Node* n) : current{n} {}
   V& operator*() const { return current->data.second; }
   K& get_key() const { return current->data.first; }
   // ++it
   Iterator& operator++() {  // now take care of issues when calling operator++
-                            // on the node having the greatest key!
+    // on the node having the greatest key!
     Node * tmp = current->right.get();
     if( tmp!=nullptr ){
-      current = BST<K,V>::Iterator::begin(tmp);
+      current = BST<K,V>::Iterator::get_leftmost(tmp);
     }
     else{
       current = current->up;
@@ -195,7 +216,7 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
   }
 
   Iterator operator++(int) {  // now take care of issues when calling operator++
-                            // on the node having the greatest key!
+    // on the node having the greatest key!
     Iterator it{current};
     ++(*this);
     return it;
@@ -204,33 +225,60 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
   bool operator==(const Iterator& other) {
     return this->current == other.current;
   }
-   /* The following is wrong. You're comparing iterators, not hte data holded by them
-      These data may not exist (eg if Iterator == Iterator{nullptr})
-   bool operator==(const Iterator& other) {
-     return this->current->data.second == other.current->data.second;
-   }
-   */
+  /* The following is wrong. You're comparing iterators, not hte data holded by them
+  These data may not exist (eg if Iterator == Iterator{nullptr})
+  bool operator==(const Iterator& other) {
+  return this->current->data.second == other.current->data.second;
+}
+*/
 
-  bool operator!=(const Iterator& other) { return !(*this == other); }
+bool operator!=(const Iterator& other) { return !(*this == other); }
 
 
 };
 
 
 template <typename K, typename V>
-typename BST<K,V>::Node * BST<K,V>::Iterator::begin( BST<K,V>::Node * start){
+typename BST<K,V>::Node * BST<K,V>::Iterator::get_leftmost( BST<K,V>::Node * start){
   //using Node =  BST<K,V>::Node;
   //using Iterator =  BST<K,V>::Iterator;
   //Node * tmp {root.get()};
   //if(tmp!=nullptr){ // do error handling!!
-    Node * tmp = start;
-    while(tmp->left.get()!=nullptr)
-      tmp = tmp->left.get();
+  Node * tmp = start;
+  while(tmp->left.get()!=nullptr)
+  tmp = tmp->left.get();
   //}
   //Iterator i {tmp};
   //std::cout<< "Value of the leftmost node attached to the one in input  = " << *i << std::endl;
   return tmp;
 }
+
+
+
+
+
+
+
+
+
+
+template <typename K, typename V>
+typename BST<K,V>::Node * BST<K,V>::Iterator::get_rightmost( BST<K,V>::Node * start){
+  //using Node =  BST<K,V>::Node;
+  //using Iterator =  BST<K,V>::Iterator;
+  //Node * tmp {root.get()};
+  //if(tmp!=nullptr){ // do error handling!!
+  Node * tmp = start;
+  while(tmp->right.get()!=nullptr)
+  tmp = tmp->right.get();
+  //}
+  //Iterator i {tmp};
+  //std::cout<< "Value of the rightmost node attached to the one in input  = " << *i << std::endl;
+  return tmp;
+}
+
+
+
 
 
 
@@ -244,7 +292,7 @@ typename BST<K,V>::Iterator BST<K,V>::begin(){
   Node * tmp {root.get()};
   if(tmp!=nullptr){
     while(tmp->left.get()!=nullptr)
-      tmp = tmp->left.get();
+    tmp = tmp->left.get();
   }
   Iterator i {tmp};
   std::cout<< "Begin = " << *i << std::endl;
@@ -253,16 +301,16 @@ typename BST<K,V>::Iterator BST<K,V>::begin(){
 /*
 template <typename K, typename V>
 typename BST<K,V>::Iterator BST<K,V>::end(){
-  using Node =  BST<K,V>::Node;
-  using Iterator =  BST<K,V>::Iterator;
-  Node * tmp {root.get()};
-  if(tmp!=nullptr){
-    while(tmp->right.get()!=nullptr)
-      tmp = tmp->right.get();
-  }
-  Iterator i {tmp};
-  std::cout<< "End = " << *i << std::endl;
-  return i;
+using Node =  BST<K,V>::Node;
+using Iterator =  BST<K,V>::Iterator;
+Node * tmp {root.get()};
+if(tmp!=nullptr){
+while(tmp->right.get()!=nullptr)
+tmp = tmp->right.get();
+}
+Iterator i {tmp};
+std::cout<< "End = " << *i << std::endl;
+return i;
 }
 */
 
@@ -278,6 +326,10 @@ typename BST<K,V>::Iterator BST<K,V>::end(){
 
 
 
+template <typename K, typename V>
+void BST<K,V>::erase_tree(){
+  root.reset();
+}
 
 
 
@@ -295,26 +347,45 @@ int BST<K,V>::insert_node( const K& k, const V& v ){
   }
 }
 
+
+/* populate_tree(istream&) makes the same job
+template <typename K, typename V>
+int BST<K,V>::insert_nodes(std::istream& i_str ){
+  if (root.get() == nullptr){
+    root.reset(new Node{k,v});
+    return 1;
+  }
+  else {
+    Node* tmp{root.get()};
+    int check = BST::cmp_key(tmp, k, v);
+    return check;
+  }
+}
+*/
+
+
+
 template <typename K, typename V>
 int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
-  if(k < tmp->data.first){
+  if (check_eq_keys(k, tmp->data.first) ){ // to be placed first to take care of == comparison
+                                           // for type double variables
+    tmp->data.second = v;
+    return 2; // should throw an exception
+  }
+  else if(k < tmp->data.first){
     tmpUp = tmp;
     //std::cout << "tmp= " << tmp << " tmpUp= " << tmpUp <<std::endl;
     if(tmp->left == nullptr)
-      tmp->left.reset(new Node{k, v, tmpUp}); // costruttore con up!
+    tmp->left.reset(new Node{k, v, tmpUp}); // costruttore con up!
     else{
       tmp = tmp->left.get();
       BST::cmp_key(tmp, k, v, tmpUp);
     }
     return 1;
   }
-  else if (k == tmp->data.first){
-    tmp->data.second = v;
-    return 2; // should throw an exception
-  }
   else{
     if(tmp->right == nullptr)
-      tmp->right.reset(new Node{k, v, tmpUp});
+    tmp->right.reset(new Node{k, v, tmpUp});
     else{
       tmp = tmp->right.get();
       BST::cmp_key(tmp, k, v, tmpUp);
@@ -328,24 +399,69 @@ int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
 template <typename K, typename V>
 void BST<K,V>::print_tree(){
   for (const auto& x : *this)
-    std::cout << x << std::endl;
+  std::cout << x << std::endl;
+}
+
+
+
+template <typename K, typename V>
+void BST<K,V>::balance_tree(){
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 template <typename K, typename V>
 void BST<K,V>::populate_tree(){
   std::string line;
+  K k; V v;
   while (std::getline(std::cin, line)){
     std::stringstream ss(line);
-    K k; V v;
     if (ss >> k >> v){
-        int check = BST::insert_node(k,v); // check error or throw exception. to be cmpleted
-        //std::cout << check << '\n';
+      int check = BST::insert_node(k,v); // check error or throw exception. to be cmpleted
+      //std::cout << check << '\n';
     }
   }
 }
+
+
+template <typename K, typename V>
+void BST<K,V>::populate_tree(std::istream& i_str){
+  std::string line;
+  K k; V v;
+  while (std::getline(i_str, line)){
+    std::stringstream ss(line);
+    if (ss >> k >> v){
+      int check = BST::insert_node(k,v); // check error or throw exception. to be cmpleted
+      //std::cout << check << '\n';
+    }
+  }
+}
+
 
 
 

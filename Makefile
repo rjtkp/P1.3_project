@@ -11,18 +11,15 @@ default: $(EXE)
 $(EXE): $(OBJ)
 	$(CXX) $^ -o $@ $(CFLAGS)
 
-
 %.o: %.cc
 	$(CXX) -c $< -o $@ $(CFLAGS)
 
 bst_main.o: ./include/ap_error.h ./include/bst.h
 
 clean:
-	rm -rf ./src/*.o *.o src/*~ include/*~ *~ html latex $(EXE)
+	rm -rf ./src/*.o *.o src/*~ include/*~ *~ html latex a.out $(EXE)
 
 doc: Doxygen/doxy.in
 	doxygen $^
-
-
 
 .PHONY: clean doc
