@@ -22,4 +22,7 @@ clean:
 doc: Doxygen/doxy.in
 	doxygen $^
 
+check:./bst.x
+	./bst.x < examples/es1.inp 
+
 .PHONY: clean doc

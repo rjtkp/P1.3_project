@@ -33,7 +33,7 @@ int main()
     for(int z=0; z < 5; z++){
     str +=  genRandom();
     }
-    myfile << str << "   " << rand()%20 << "\n";
+    myfile << rand()%20 << "   " << str << "\n";
   }
 
   myfile.close();
