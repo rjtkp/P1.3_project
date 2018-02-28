@@ -22,6 +22,7 @@ TO DO: Introduce functions last to pick up the last element.
 */
 
 
+
 /** Class Binary Search Tree (BST). Templated on both the key and the value stored in each node.
 */
 template <typename K, typename V>
@@ -33,21 +34,36 @@ class BST{
     data.first stores the key.
     data.second stores the associated value.
     */
+    /*typedef std::unique_ptr<std::pair<K, V>> pair; pair data;*/
     std::pair<K, V> data;
-    std::unique_ptr<Node> left; /** Left link of the current node in the BST. */
-    std::unique_ptr<Node> right; /** Right link of the current node in the BST. */
-    Node * up; /** Up link of the current node. It stores the address of the last node passed form left. */
+    /** Left link of the current node in the BST. */
+    std::unique_ptr<Node> left;
+    /** Right link of the current node in the BST. */
+    std::unique_ptr<Node> right;
+    /** Up link of the current node. It stores the address of the last node passed form left. */
+    Node * up;
+
 
     /** Plain "DWIM" ctor for a new Node.
     * It stores the input key and value into the templated std::pair data  and
     * and sets both the left and the right links to nullptr.
     */
-    Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {}// custom ctor
-    Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {}// custom ctor
+    Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
+      /*
+      Iterator i {this};
+      std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
+      */
+    }// custom ctor
+    Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
+      /*
+      Iterator i {this};
+      std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
+      */
+    }// custom ctor
   }; // end of struct Node
 
-
-  std::unique_ptr<Node> root; /** Unique ptr to the root node. The gateway to the BST. */
+  /** Unique ptr to the root node. The gateway to the BST. */
+  std::unique_ptr<Node> root;
 
 
   bool check_eq_keys(const K& a, const K& b){
@@ -74,19 +90,28 @@ public:
   void erase_tree();
 
   class Iterator;
-  Iterator begin();
-  Iterator end() { return Iterator{nullptr}; };
+  Iterator begin(); //{
+    // Node * tmp {root.get()};
+    // if(tmp!=nullptr){
+    //   while(tmp->left.get()!=nullptr)
+    //     tmp = tmp->left.get();
+    // }
+    // Iterator i {tmp};
+    // std::cout<< "Begin = " << *i << std::endl;
+    // return tmp;
+    //} // to be modified
+    Iterator end() { return Iterator{nullptr}; };
 
-  class ConstIterator;
-  ConstIterator begin() const;
-  ConstIterator end() const { return ConstIterator{nullptr}; }
+    class ConstIterator;
+    ConstIterator begin() const;
+    ConstIterator end() const { return ConstIterator{nullptr}; }
 
-  ConstIterator cbegin() const ;
-  ConstIterator cend() const { return ConstIterator{nullptr}; }
+    ConstIterator cbegin() const ;
+    ConstIterator cend() const { return ConstIterator{nullptr}; }
 
 
-  }; /*END OF CLASS BST*/
-
+  };
+  /*END OF CLASS BST*/
 
 
   /* BEGIN OF CLASS BST<K,V>::ConstIterator */
@@ -228,6 +253,15 @@ typename BST<K,V>::Node * BST<K,V>::Iterator::get_leftmost( BST<K,V>::Node * sta
   return tmp;
 }
 
+
+
+
+
+
+
+
+
+
 template <typename K, typename V>
 typename BST<K,V>::Node * BST<K,V>::Iterator::get_rightmost( BST<K,V>::Node * start){
   //using Node =  BST<K,V>::Node;
@@ -242,6 +276,14 @@ typename BST<K,V>::Node * BST<K,V>::Iterator::get_rightmost( BST<K,V>::Node * st
   //std::cout<< "Value of the rightmost node attached to the one in input  = " << *i << std::endl;
   return tmp;
 }
+
+
+
+
+
+
+
+
 
 template <typename K, typename V>
 typename BST<K,V>::Iterator BST<K,V>::begin(){
@@ -273,10 +315,24 @@ return i;
 */
 
 
+
+
+
+
+
+
+
+
+
+
+
 template <typename K, typename V>
 void BST<K,V>::erase_tree(){
   root.reset();
 }
+
+
+
 
 template <typename K, typename V>
 int BST<K,V>::insert_node( const K& k, const V& v ){
@@ -290,6 +346,7 @@ int BST<K,V>::insert_node( const K& k, const V& v ){
     return check;
   }
 }
+
 
 /* populate_tree(istream&) makes the same job
 template <typename K, typename V>
@@ -305,6 +362,7 @@ int BST<K,V>::insert_nodes(std::istream& i_str ){
   }
 }
 */
+
 
 
 template <typename K, typename V>
@@ -345,10 +403,36 @@ void BST<K,V>::print_tree(){
 }
 
 
+
 template <typename K, typename V>
 void BST<K,V>::balance_tree(){
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 template <typename K, typename V>
@@ -377,5 +461,23 @@ void BST<K,V>::populate_tree(std::istream& i_str){
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif
