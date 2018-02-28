@@ -10,8 +10,15 @@
 
 int main(){
 
+  std::istringstream iss("34 34");
+  std::istringstream iss1("344 344");
+
+
   BST<int, int> bst {};
-  bst.populate_tree();
+  bst.populate_tree(); // read automatically from std::cin
+  //bst.populate_tree(std::cin); // read from a specified istream
+  bst.populate_tree(iss);
+  bst.populate_tree(iss1);
   /*
   auto i = bst.begin();
   auto k = bst.end();
@@ -25,6 +32,7 @@ for (; it != it_end; ++it){
   std::cout << *it << std::endl;
 }
 
+  bst.insert_node(0,0);
   bst.insert_node(100,100);
 
   for (const auto& x : bst)
@@ -32,7 +40,7 @@ for (; it != it_end; ++it){
 
   std::cout << "/* message */" << std::endl;
   bst.print_tree();
-
+  bst.erase_tree();
 
   /*
   std::cout<< " ConstIterator cbegin j="<<*j<<std::endl;
