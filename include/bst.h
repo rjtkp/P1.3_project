@@ -67,7 +67,7 @@ class BST{
 
 
   bool check_eq_keys(const K& a, const K& b){
-    if (a==b) return true;
+    if ( fabs(a-b)< TOL ) return true;
     else return false;
   }
 
@@ -88,6 +88,9 @@ public:
   void print_tree();
   void balance_tree();
   void erase_tree();
+  int find(Node * tmp, const K& k);
+  int find_key(const K& k);
+
 
   class Iterator;
   Iterator begin(); //{
@@ -137,7 +140,7 @@ public:
       tmp = tmp->left.get();
     }
     ConstIterator i {tmp};
-    std::cout<< "ConstIterator Begin = " << *i << std::endl;
+    // std::cout<< "ConstIterator Begin = " << *i << std::endl;
     return i;
   }
 
@@ -168,7 +171,7 @@ typename BST<K,V>::ConstIterator BST<K,V>::cbegin() const {
     tmp = tmp->left.get();
   }
   ConstIterator i {tmp};
-  std::cout<< "ConstIterator Begin = " << *i << std::endl;
+  // std::cout<< "ConstIterator Begin = " << *i << std::endl;
   return i;
 }
 
@@ -295,7 +298,7 @@ typename BST<K,V>::Iterator BST<K,V>::begin(){
     tmp = tmp->left.get();
   }
   Iterator i {tmp};
-  std::cout<< "Begin = " << *i << std::endl;
+  // std::cout<< "Begin = " << *i << std::endl;
   return i;
 }
 /*
@@ -347,7 +350,6 @@ int BST<K,V>::insert_node( const K& k, const V& v ){
   }
 }
 
-
 /* populate_tree(istream&) makes the same job
 template <typename K, typename V>
 int BST<K,V>::insert_nodes(std::istream& i_str ){
@@ -363,7 +365,45 @@ int BST<K,V>::insert_nodes(std::istream& i_str ){
 }
 */
 
+template <typename K, typename V>
+int BST<K,V>::find_key(const K& k){
+  Node* tmp{root.get()};
+  find(tmp, k);
+  return 1;
+}
 
+  template <typename K, typename V>
+  int BST<K,V>::find(Node * tmp, const K& k){
+  /** One starts srearching from the root or any of the nodes possible*/
+
+  if (check_eq_keys(k, tmp->data.first) ) {
+    std::cout << "The key has been found."<< k << std::endl;
+    return 2;
+  }
+
+  /**Entering in the left banch from the starting node if not found.*/
+  else if (k < tmp->data.first) {
+    if(tmp->left == nullptr)
+    std::cout << "key is not present in the tree." << '\n';
+    else{
+      tmp = tmp->left.get();
+      BST::find(tmp, k);
+    }
+    return 1;
+  }
+
+  /**Entering in the left banch from the starting node if not found.*/
+  else {
+    if(tmp->right == nullptr){
+      std::cout << "key is not present in the tree." << '\n';
+  }
+    else{
+      tmp = tmp->right.get();
+      BST::find(tmp, k);
+    }
+    return 1;
+  }
+}
 
 template <typename K, typename V>
 int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
@@ -442,7 +482,8 @@ void BST<K,V>::populate_tree(){
   while (std::getline(std::cin, line)){
     std::stringstream ss(line);
     if (ss >> k >> v){
-      int check = BST::insert_node(k,v); // check error or throw exception. to be cmpleted
+      // std::cout << k << v <<'\n';
+      BST::insert_node(k,v); // check error or throw exception. to be cmpleted
       //std::cout << check << '\n';
     }
   }
@@ -456,7 +497,8 @@ void BST<K,V>::populate_tree(std::istream& i_str){
   while (std::getline(i_str, line)){
     std::stringstream ss(line);
     if (ss >> k >> v){
-      int check = BST::insert_node(k,v); // check error or throw exception. to be cmpleted
+      // std::cout << k << v <<'\n';
+      BST::insert_node(k,v); // check error or throw exception. to be cmpleted
       //std::cout << check << '\n';
     }
   }

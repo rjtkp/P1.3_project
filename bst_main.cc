@@ -40,6 +40,11 @@ for (; it != it_end; ++it){
 
   std::cout << "/* message */" << std::endl;
   bst.print_tree();
+  bst.find_key(1);
+  bst.find_key(2);
+  bst.find_key(3);
+  bst.find_key(1.1);
+  bst.find_key(5);
   bst.erase_tree();
 
   /*
