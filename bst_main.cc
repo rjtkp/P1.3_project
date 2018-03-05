@@ -45,6 +45,7 @@ for (; it != it_end; ++it){
   bst.find_key(3);
   bst.find_key(1.1);
   bst.find_key(5);
+  bst.isBalanced();
   bst.erase_tree();
 
   /*
