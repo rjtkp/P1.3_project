@@ -67,14 +67,14 @@ class BST{
 
 
   bool check_eq_keys(const K& a, const K& b){
-    if ( fabs(a-b)< TOL ) return true;
+    if ( fabs(a-b)< TOL ) return true; // Overloading will fail when overloaded function templated with double 
     else return false;
   }
 
-  bool check_eq_keys(const double& a, const double& b){
-    if ( fabs(a-b)< TOL ) return true;
-    else return false;
-  }
+  // bool check_eq_keys(const double& a, const double& b){
+  //   if ( fabs(a-b)< TOL ) return true;
+  //   else return false;
+  // }
 
 
 public:
