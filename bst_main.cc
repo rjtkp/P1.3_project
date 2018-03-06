@@ -41,8 +41,7 @@ for (; it != it_end; ++it){
   std::cout << "/* message */" << std::endl;
   bst.print_tree();
   bst.erase_tree();
-  std::cout << "/* TREE ERASED */" << std::endl;
-  //bst.print_tree(); --> if called here it causes SIGSEGV
+
   /*
   std::cout<< " ConstIterator cbegin j="<<*j<<std::endl;
   std::cout<< "ConstIterator cend l="<<*l<<std::endl;

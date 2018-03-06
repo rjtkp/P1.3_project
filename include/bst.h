@@ -2,9 +2,9 @@
 #ifndef __BST_H__
 #define __BST_H__
 
-#ifndef TOL
-#define TOL 0.000001
-#endif
+  #ifndef TOL
+  #define TOL 0.000001
+  #endif
 
 #include <iostream> // I/O
 #include <memory> // smart pointers
@@ -44,6 +44,7 @@ class BST{
     Node * up;
 
 
+    Node() {}
     /** Plain "DWIM" ctor for a new Node.
     * It stores the input key and value into the templated std::pair data  and
     * and sets both the left and the right links to nullptr.
@@ -60,6 +61,9 @@ class BST{
       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
       */
     }// custom ctor
+
+    Node(const Node & old);
+
   }; // end of struct Node
 
   /** Unique ptr to the root node. The gateway to the BST. */
@@ -80,6 +84,13 @@ class BST{
 public:
   /** Default ctor for a BST. It initializes a Tree with no nodes. */
   BST(): root{nullptr} {}
+  BST(const BST & old)  {
+    root.reset(new Node{}); // check if already allocated!!!
+    Node * tmp = old.get();
+    root.reset(*tmp);
+  }
+
+
   int insert_node(const K& k, const V& v);
   int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
   void populate_tree();
@@ -108,11 +119,29 @@ public:
 
     ConstIterator cbegin() const ;
     ConstIterator cend() const { return ConstIterator{nullptr}; }
-    
+
 
   };
   /*END OF CLASS BST*/
 
+
+
+
+  template <typename K, typename V>
+  BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.get().data}, up{nullptr}, left{nullptr}, right{nullptr} {
+    //using Node = BST<K,V>::Node
+    Node * old_node {old.get()};
+    if (old_node->left){
+      Node * old_node_l {old_node->left.get()};
+      left.reset(new Node{*(old_node_l->left)});  // recursively call copy constructor
+      left->up = this;
+    }
+    if (old_node->right){
+      Node * old_node_r {old_node->right.get()};
+      right.reset(new Node{*(old_node_r->left)});  // recursively call copy constructor
+      right->up = this.up;
+    }
+  }
 
   /* BEGIN OF CLASS BST<K,V>::ConstIterator */
   template <typename K, typename V>
@@ -198,41 +227,41 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
   Node * get_leftmost(Node * start);
   Node * get_rightmost(Node * start);
 
-public:
-  Iterator(Node* n) : current{n} {}
-  V& operator*() const { return current->data.second; }
-  K& get_key() const { return current->data.first; }
-  // ++it
-  Iterator& operator++() {  // now take care of issues when calling operator++
-    // on the node having the greatest key!
-    Node * tmp = current->right.get();
-    if( tmp!=nullptr ){
-      current = BST<K,V>::Iterator::get_leftmost(tmp);
+  public:
+    Iterator(Node* n) : current{n} {}
+    V& operator*() const { return current->data.second; }
+    K& get_key() const { return current->data.first; }
+    // ++it
+    Iterator& operator++() {  // now take care of issues when calling operator++
+      // on the node having the greatest key!
+      Node * tmp = current->right.get();
+      if( tmp!=nullptr ){
+        current = BST<K,V>::Iterator::get_leftmost(tmp);
+      }
+      else{
+        current = current->up;
+      }
+      return *this;
     }
-    else{
-      current = current->up;
+
+    Iterator operator++(int) {  // now take care of issues when calling operator++
+      // on the node having the greatest key!
+      Iterator it{current};
+      ++(*this);
+      return it;
     }
-    return *this;
-  }
 
-  Iterator operator++(int) {  // now take care of issues when calling operator++
-    // on the node having the greatest key!
-    Iterator it{current};
-    ++(*this);
-    return it;
+    bool operator==(const Iterator& other) {
+      return this->current == other.current;
+    }
+    /* The following is wrong. You're comparing iterators, not hte data holded by them
+    These data may not exist (eg if Iterator == Iterator{nullptr})
+    bool operator==(const Iterator& other) {
+    return this->current->data.second == other.current->data.second;
   }
+  */
 
-  bool operator==(const Iterator& other) {
-    return this->current == other.current;
-  }
-  /* The following is wrong. You're comparing iterators, not hte data holded by them
-  These data may not exist (eg if Iterator == Iterator{nullptr})
-  bool operator==(const Iterator& other) {
-  return this->current->data.second == other.current->data.second;
-}
-*/
-
-bool operator!=(const Iterator& other) { return !(*this == other); }
+    bool operator!=(const Iterator& other) { return !(*this == other); }
 
 
 };
@@ -402,6 +431,15 @@ void BST<K,V>::print_tree(){
   std::cout << x << std::endl;
 }
 
+
+/* TO BE TESTED!!! XXXXXXXXXX
+template <typename K, typename V>
+std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
+  for (const auto& x : *tree)
+    os << x << std::endl;
+  return os;
+}
+*/
 
 
 template <typename K, typename V>
