@@ -90,7 +90,8 @@ public:
   void erase_tree();
   int find(Node * tmp, const K& k);
   int find_key(const K& k);
-  bool isBalanced();
+  int isBalanced();
+  bool is_same_height(Node * tmp);
   int max(int a, int b);
   int height(Node * tmp);
 
@@ -507,36 +508,6 @@ void BST<K,V>::populate_tree(std::istream& i_str){
   }
 }
 
-
-/** Returns true if binary tree with root as root is height-balanced */
-template <typename K, typename V>
-bool BST<K,V>::isBalanced(){
-
-  Node * tmp{root.get()};
-  int lh; /* for height of left subtree */
-  int rh; /* for height of right subtree */
-
-   /** If the tree is empty.*/
-   if(tmp == nullptr){
-     std::cout << "The tree is balanced" << '\n';
-     return true;
-   }
-
-   /* Get the height of left and right sub trees */
-   lh = height(tmp->left);
-   rh = height(tmp->right);
-
-   if( abs(lh-rh) <= 1 && isBalanced(tmp->left) && isBalanced(root->right)){
-     std::cout << "The tree is balanced" << '\n';
-     return true;
-   }
-
-   /** In this point the tree is not balanced with respect to the chosen root.
-   Which signifies that at some level/height all the nodes don't have the same
-   number of childeren nodes.*/
-   return false;
-}
-
 /** returns maximum of two integers */
 template <typename K, typename V>
 int BST<K,V>::max(int a, int b){
@@ -552,8 +523,46 @@ int BST<K,V>::height(Node * tmp){
        return 0;
 
    /** If tree is not empty then height = 1 + max of leftheight and right heights */
-   return 1 + max(height(tmp->left), height(tmp->right));
+   return 1 + max(height(tmp->left.get()), height(tmp->right.get()));
 }
+/** Returns true if binary tree with root as root is height-balanced */
+template <typename K, typename V>
+bool BST<K,V>::is_same_height(Node * tmp){
+
+  int lh; /* for height of left subtree */
+  int rh; /* for height of right subtree */
+
+   /** If the tree is empty.*/
+   if(tmp == nullptr){
+     std::cout << "The tree is balanced" << '\n';
+     return true;
+   }
+
+   /* Get the height of left and right sub trees */
+   lh = height(tmp->left.get());
+   rh = height(tmp->right.get());
+
+   if( abs(lh-rh) <= 1 && is_same_height(tmp->right.get()) && is_same_height(tmp->left.get())){
+     std::cout << "The tree is balanced" << '\n';
+     return true;
+   }
+
+   /** In this point the tree is not balanced with respect to the chosen root.
+   Which signifies that at some level/height all the nodes don't have the same
+   number of childeren nodes.*/
+   // std::cout << "The tree is not balanced" << '\n';
+   return false;
+}
+
+template <typename K, typename V>
+int BST<K,V>::isBalanced(){
+  Node* tmp{root.get()};
+  if(!is_same_height(tmp)) std::cout << "tree is not balanced" << '\n';;
+  return 0;
+}
+
+
+
 
 
 
