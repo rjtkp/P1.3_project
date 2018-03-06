@@ -17,8 +17,8 @@ int main(){
   BST<int, int> bst {};
   bst.populate_tree(); // read automatically from std::cin
   //bst.populate_tree(std::cin); // read from a specified istream
+  //bst.print_tree();
 
-  bst.print_tree();
   BST<int, int> bst2{bst};
   bst2.print_tree();
 

@@ -50,16 +50,16 @@ class BST{
     * and sets both the left and the right links to nullptr.
     */
     Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
-
+      /*
       Iterator i {this};
       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
-
+      */
     }// custom ctor
     Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
-
+      /*
       Iterator i {this};
       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
-
+      */
     }// custom ctor
 
     Node(const Node & old);
@@ -88,6 +88,7 @@ public:
     Node * tmp = old.root.get();
     //root.reset(new Node()); // check if already allocated!!!
     root.reset(new Node{*tmp});
+    root->up = nullptr;
     //root{tmp};
   }
 
@@ -126,6 +127,7 @@ public:
 
   template <typename K, typename V>
   BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.data}, left{nullptr}, right{nullptr} {
+
     //using Node = BST<K,V>::Node
     //Node * old_node {old.get()};
     if (old.left){
