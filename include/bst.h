@@ -125,7 +125,7 @@ public:
 
 
   template <typename K, typename V>
-  BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.data}, up{nullptr}, left{nullptr}, right{nullptr} {
+  BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.data}, left{nullptr}, right{nullptr} {
     //using Node = BST<K,V>::Node
     //Node * old_node {old.get()};
     if (old.left){
