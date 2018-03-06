@@ -50,16 +50,16 @@ class BST{
     * and sets both the left and the right links to nullptr.
     */
     Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
-      /*
+
       Iterator i {this};
       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
-      */
+
     }// custom ctor
     Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
-      /*
+
       Iterator i {this};
       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
-      */
+
     }// custom ctor
 
     Node(const Node & old);
@@ -84,10 +84,11 @@ class BST{
 public:
   /** Default ctor for a BST. It initializes a Tree with no nodes. */
   BST(): root{nullptr} {}
-  BST(const BST & old)  {
-    root.reset(new Node{}); // check if already allocated!!!
-    Node * tmp = old.get();
-    root.reset(*tmp);
+  BST(const BST & old) {
+    Node * tmp = old.root.get();
+    //root.reset(new Node()); // check if already allocated!!!
+    root.reset(new Node{*tmp});
+    //root{tmp};
   }
 
 
@@ -95,11 +96,9 @@ public:
   int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
   void populate_tree();
   void populate_tree(std::istream& i_str);
-  // void insert_nodes(std::istream& i_str); // populate_tree(istream&) makes the same job
   void print_tree();
   void balance_tree();
   void erase_tree();
-
   class Iterator;
   Iterator begin(); //{
     // Node * tmp {root.get()};
@@ -125,21 +124,19 @@ public:
   /*END OF CLASS BST*/
 
 
-
-
   template <typename K, typename V>
-  BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.get().data}, up{nullptr}, left{nullptr}, right{nullptr} {
+  BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.data}, up{nullptr}, left{nullptr}, right{nullptr} {
     //using Node = BST<K,V>::Node
-    Node * old_node {old.get()};
-    if (old_node->left){
-      Node * old_node_l {old_node->left.get()};
-      left.reset(new Node{*(old_node_l->left)});  // recursively call copy constructor
-      left->up = this;
+    //Node * old_node {old.get()};
+    if (old.left){
+      Node * old_node_l {old.left.get()};
+      left.reset(new Node{*old_node_l});  // recursively call copy constructor
+      left->up = old_node_l;
     }
-    if (old_node->right){
-      Node * old_node_r {old_node->right.get()};
-      right.reset(new Node{*(old_node_r->left)});  // recursively call copy constructor
-      right->up = this.up;
+    if (old.right){
+      Node * old_node_r {old.right.get()};
+      right.reset(new Node{*old_node_r});  // recursively call copy constructor
+      right->up = old_node_r->up;
     }
   }
 
