@@ -204,7 +204,7 @@ public:
       tmp = tmp->left.get();
     }
     ConstIterator i {tmp};
-    std::cout<< "ConstIterator Begin = " << *i << std::endl;
+    //std::cout<< "ConstIterator Begin = " << *i << std::endl;
     return i;
   }
 
@@ -235,7 +235,7 @@ typename BST<K,V>::ConstIterator BST<K,V>::cbegin() const {
     tmp = tmp->left.get();
   }
   ConstIterator i {tmp};
-  std::cout<< "ConstIterator Begin = " << *i << std::endl;
+  //std::cout<< "ConstIterator Begin = " << *i << std::endl;
   return i;
 }
 
@@ -250,7 +250,7 @@ while(tmp->right.get()!=nullptr)
 tmp = tmp->right.get();
 }
 ConstIterator i {tmp};
-std::cout<< "ConstIterator End = " << *i << std::endl;
+//std::cout<< "ConstIterator End = " << *i << std::endl;
 return i;
 }
 
@@ -465,8 +465,11 @@ int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
 
 template <typename K, typename V>
 void BST<K,V>::print_tree(){
-  for (const auto& x : *this)
-  std::cout << x << std::endl;
+  //using cIt = BST<K,V>::ConstIterator;
+    // for (const auto& x : *this)
+    //  std::cout << " : "<< x << std::endl;
+    for (auto i=this->cbegin(); i!=this->cend(); ++i)
+        std::cout << i.get_key() << " : " << *i << std::endl;
 }
 
 
