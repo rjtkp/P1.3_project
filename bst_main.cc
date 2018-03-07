@@ -22,7 +22,10 @@ int main(){
   BST<int, int> bst2{bst};
   bst2.print_tree();
 
-
+  BST<int, int> bst3;
+  bst3 = bst2;
+  std::cout << "\nprint 3" <<std::endl;
+  bst3.print_tree();
 
 
 //
@@ -51,9 +54,15 @@ int main(){
 //   bst.print_tree();
 //   bst.erase_tree();
 
-  /*
+  std::cout << "Try clast"<< std::endl;
+   auto j = bst.cbegin();
+   auto l = bst.clast();
+
+
   std::cout<< " ConstIterator cbegin j="<<*j<<std::endl;
-  std::cout<< "ConstIterator cend l="<<*l<<std::endl;
+  std::cout<< "ConstIterator last l="<<*l<<std::endl;
+
+/*
 
   j++;
   *i=20;

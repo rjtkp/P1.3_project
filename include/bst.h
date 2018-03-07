@@ -63,7 +63,7 @@ class BST{
     }// custom ctor
 
     Node(const Node & old);
-
+    //Node& operator=(const Node &);
   }; // end of struct Node
 
   /** Unique ptr to the root node. The gateway to the BST. */
@@ -88,9 +88,20 @@ public:
     Node * tmp = old.root.get();
     //root.reset(new Node()); // check if already allocated!!!
     root.reset(new Node{*tmp});
-    root->up = nullptr;
-    //root{tmp};
+    root->up = nullptr; // without this, root->up would remain uninitialized.
+    //root{tmp}; // cannot do this: root is a smart pointer
   }
+
+  BST & operator=(const BST & old){
+    // must be declared within the class
+    //https://stackoverflow.com/questions/871264/what-does-operator-must-be-a-non-static-member-mean
+    using Node =  BST<K,V>::Node;
+    Node * tmp = old.root.get();
+    root.reset(new Node{*tmp});
+    root->up = nullptr; // without this, root->up would remain uninitialized.
+    return *this;
+  }
+
 
 
   int insert_node(const K& k, const V& v);
@@ -112,24 +123,25 @@ public:
     // return tmp;
     //} // to be modified
     Iterator end() { return Iterator{nullptr}; };
+    Iterator last();
 
     class ConstIterator;
     ConstIterator begin() const;
     ConstIterator end() const { return ConstIterator{nullptr}; }
+    ConstIterator last() const;
 
     ConstIterator cbegin() const ;
     ConstIterator cend() const { return ConstIterator{nullptr}; }
+    ConstIterator clast() const;
 
 
   };
   /*END OF CLASS BST*/
 
 
+
   template <typename K, typename V>
   BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.data}, left{nullptr}, right{nullptr} {
-
-    //using Node = BST<K,V>::Node
-    //Node * old_node {old.get()};
     if (old.left){
       Node * old_node_l {old.left.get()};
       left.reset(new Node{*old_node_l});  // recursively call copy constructor
@@ -141,6 +153,10 @@ public:
       right->up = old_node_r->up;
     }
   }
+
+
+
+
 
   /* BEGIN OF CLASS BST<K,V>::ConstIterator */
   template <typename K, typename V>
@@ -169,9 +185,9 @@ public:
     return i;
   }
 
-  /*
+
   template <typename K, typename V>
-  typename BST<K,V>::ConstIterator BST<K,V>::end() const {
+  typename BST<K,V>::ConstIterator BST<K,V>::last() const {
   using Node =  BST<K,V>::Node;
   using Iterator =  BST<K,V>::Iterator;
   Node * tmp {root.get()};
@@ -183,7 +199,7 @@ Iterator i {tmp};
 std::cout<< "End = " << *i << std::endl;
 return i;
 }
-*/
+
 
 
 template <typename K, typename V>
@@ -200,9 +216,9 @@ typename BST<K,V>::ConstIterator BST<K,V>::cbegin() const {
   return i;
 }
 
-/*
+
 template <typename K, typename V>
-typename BST<K,V>::ConstIterator BST<K,V>::cend() const {
+typename BST<K,V>::ConstIterator BST<K,V>::clast() const {
 using Node =  BST<K,V>::Node;
 using ConstIterator =  BST<K,V>::ConstIterator;
 Node * tmp {root.get()};
@@ -214,7 +230,7 @@ ConstIterator i {tmp};
 std::cout<< "ConstIterator End = " << *i << std::endl;
 return i;
 }
-*/
+
 
 
 
@@ -326,9 +342,9 @@ typename BST<K,V>::Iterator BST<K,V>::begin(){
   std::cout<< "Begin = " << *i << std::endl;
   return i;
 }
-/*
+
 template <typename K, typename V>
-typename BST<K,V>::Iterator BST<K,V>::end(){
+typename BST<K,V>::Iterator BST<K,V>::last(){
 using Node =  BST<K,V>::Node;
 using Iterator =  BST<K,V>::Iterator;
 Node * tmp {root.get()};
@@ -340,7 +356,7 @@ Iterator i {tmp};
 std::cout<< "End = " << *i << std::endl;
 return i;
 }
-*/
+
 
 
 
