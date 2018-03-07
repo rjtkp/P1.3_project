@@ -92,6 +92,14 @@ public:
     //root{tmp}; // cannot do this: root is a smart pointer
   }
 
+  BST(BST && old): root{std::move(old.root)} {}
+
+  BST & operator=(BST&& old) {
+    root = std::move(old.root);
+    return *this;
+  }
+
+
   BST & operator=(const BST & old){
     // must be declared within the class
     //https://stackoverflow.com/questions/871264/what-does-operator-must-be-a-non-static-member-mean

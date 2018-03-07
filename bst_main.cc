@@ -27,7 +27,13 @@ int main(){
   std::cout << "\nprint 3" <<std::endl;
   bst3.print_tree();
 
-
+  BST<int, int> bst4{std::move(bst)};
+  BST<int, int> bst5;
+  bst5 = std::move(bst2);
+  std::cout << "bst4 After move assignment"<<std::endl;
+  bst4.print_tree();
+  std::cout << "bst5 After move assignment"<<std::endl;
+  bst5.print_tree();
 //
 //   bst.populate_tree(iss);
 //   bst.populate_tree(iss1);
@@ -55,12 +61,14 @@ int main(){
 //   bst.erase_tree();
 
   std::cout << "Try clast"<< std::endl;
-   auto j = bst.cbegin();
-   auto l = bst.clast();
+   auto j = bst5.cbegin();
+   auto l = bst5.clast();
 
 
   std::cout<< " ConstIterator cbegin j="<<*j<<std::endl;
   std::cout<< "ConstIterator last l="<<*l<<std::endl;
+
+
 
 /*
 
