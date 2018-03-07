@@ -2,7 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <utility>
- #include <bst.h>
+#include <bst.h>
 // #include <bst_iterator.h>
 //#include <bst_all.h>
 #include <ap_error.h>
@@ -14,6 +14,14 @@ int main(){
   std::istringstream iss1("344 344");
 
 
+  BST<double, double> bstd {};
+  bstd.populate_tree();
+  bstd.print_tree();
+
+
+
+
+  /*
   BST<int, int> bst {};
   bst.populate_tree(); // read automatically from std::cin
   //bst.populate_tree(std::cin); // read from a specified istream
@@ -34,6 +42,8 @@ int main(){
   bst4.print_tree();
   std::cout << "bst5 After move assignment"<<std::endl;
   bst5.print_tree();
+  */
+
 //
 //   bst.populate_tree(iss);
 //   bst.populate_tree(iss1);
@@ -60,6 +70,7 @@ int main(){
 //   bst.print_tree();
 //   bst.erase_tree();
 
+  /*
   std::cout << "Try clast"<< std::endl;
    auto j = bst5.cbegin();
    auto l = bst5.clast();
@@ -67,7 +78,7 @@ int main(){
 
   std::cout<< " ConstIterator cbegin j="<<*j<<std::endl;
   std::cout<< "ConstIterator last l="<<*l<<std::endl;
-
+  */
 
 
 /*

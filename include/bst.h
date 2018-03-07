@@ -69,7 +69,8 @@ class BST{
   /** Unique ptr to the root node. The gateway to the BST. */
   std::unique_ptr<Node> root;
 
-
+  bool check_eq_keys(const K& a, const K& b);
+  /************** FUNCTION TEMPLATE OVERLOADING *************
   bool check_eq_keys(const K& a, const K& b){
     if (a==b) return true;
     else return false;
@@ -79,7 +80,7 @@ class BST{
     if ( fabs(a-b)< TOL ) return true;
     else return false;
   }
-
+  *************************************************************/
 
 public:
   /** Default ctor for a BST. It initializes a Tree with no nodes. */
@@ -145,6 +146,20 @@ public:
 
   };
   /*END OF CLASS BST*/
+
+
+  template<typename K, typename V>
+  bool BST<K,V>::check_eq_keys(const K& a, const K& b){
+    if (a==b) return true;
+    else return false;
+  }
+
+  template<>
+  bool BST<double,double>::check_eq_keys(const double& a, const double& b){
+    if ( fabs(a-b)< TOL ) return true;
+    else return false;
+  }
+
 
 
 
