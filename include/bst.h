@@ -103,7 +103,7 @@ public:
 
 
   int insert_node(const K& k, const V& v);
-  int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
+  void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
   void populate_tree();
   void populate_tree(std::istream& i_str);
   void print_tree();
@@ -399,7 +399,7 @@ void BST<K,V>::erase_tree(){
 
 
 template <typename K, typename V>
-BST<K,V>::insert_node( const K& k, const V& v ){
+void BST<K,V>::insert_node( const K& k, const V& v ){
   if (root.get() == nullptr){
     root.reset(new Node{k,v});
   }
