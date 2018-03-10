@@ -102,7 +102,7 @@ public:
 
 
 
-  int insert_node(const K& k, const V& v);
+  void insert_node(const K& k, const V& v);
   void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
   void populate_tree();
   void populate_tree(std::istream& i_str);
