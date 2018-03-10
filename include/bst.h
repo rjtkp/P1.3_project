@@ -2,9 +2,9 @@
 #ifndef __BST_H__
 #define __BST_H__
 
-#ifndef TOL
-#define TOL 0.000001
-#endif
+  #ifndef TOL
+  #define TOL 0.000001
+  #endif
 
 #include <iostream> // I/O
 #include <memory> // smart pointers
@@ -44,6 +44,7 @@ class BST{
     Node * up;
 
 
+    Node() {}
     /** Plain "DWIM" ctor for a new Node.
     * It stores the input key and value into the templated std::pair data  and
     * and sets both the left and the right links to nullptr.
@@ -60,34 +61,61 @@ class BST{
       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
       */
     }// custom ctor
+
+    Node(const Node & old);
+    //Node& operator=(const Node &);
   }; // end of struct Node
 
   /** Unique ptr to the root node. The gateway to the BST. */
   std::unique_ptr<Node> root;
 
-
-  bool check_eq_keys(const K& a, const K& b){
-    if (a==b) return true;
-    else return false;
-  }
-
-  bool check_eq_keys(const double& a, const double& b){
-    if ( fabs(a-b)< TOL ) return true;
-    else return false;
-  }
-
+  bool check_eq_keys(const K& a, const K& b);
 
 public:
   /** Default ctor for a BST. It initializes a Tree with no nodes. */
   BST(): root{nullptr} {}
-  int insert_node(const K& k, const V& v);
-  int cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
+  BST(const BST & old) {
+    Node * tmp = old.root.get();
+    //root.reset(new Node()); // check if already allocated!!!
+    root.reset(new Node{*tmp});
+    root->up = nullptr; // without this, root->up would remain uninitialized.
+    //root{tmp}; // cannot do this: root is a smart pointer
+  }
+
+  BST(BST && old): root{std::move(old.root)} {}
+
+  BST & operator=(BST&& old) {
+    root = std::move(old.root);
+    return *this;
+  }
+
+
+  BST & operator=(const BST & old){
+    // must be declared within the class
+    //https://stackoverflow.com/questions/871264/what-does-operator-must-be-a-non-static-member-mean
+    using Node =  BST<K,V>::Node;
+    Node * tmp = old.root.get();
+    root.reset(new Node{*tmp});
+    root->up = nullptr; // without this, root->up would remain uninitialized.
+    return *this;
+  }
+
+
+
+  void insert_node(const K& k, const V& v);
+  void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
   void populate_tree();
   void populate_tree(std::istream& i_str);
-  // void insert_nodes(std::istream& i_str); // populate_tree(istream&) makes the same job
   void print_tree();
   void balance_tree();
   void erase_tree();
+  int find(Node * tmp, const K& k);
+  int find_key(const K& k);
+  int isBalanced();
+  bool is_same_height(Node * tmp);
+  int max(int a, int b);
+  int height(Node * tmp);
+
 
   class Iterator;
   Iterator begin(); //{
@@ -101,17 +129,53 @@ public:
     // return tmp;
     //} // to be modified
     Iterator end() { return Iterator{nullptr}; };
+    Iterator last();
 
     class ConstIterator;
     ConstIterator begin() const;
     ConstIterator end() const { return ConstIterator{nullptr}; }
+    ConstIterator last() const;
 
     ConstIterator cbegin() const ;
     ConstIterator cend() const { return ConstIterator{nullptr}; }
+    ConstIterator clast() const;
 
 
   };
   /*END OF CLASS BST*/
+
+
+  template<typename K, typename V>
+  bool BST<K,V>::check_eq_keys(const K& a, const K& b){
+    if (a==b) return true;
+    else return false;
+  }
+
+  template<>
+  bool BST<double,double>::check_eq_keys(const double& a, const double& b){
+    if ( fabs(a-b)< TOL ) return true;
+    else return false;
+  }
+
+
+
+
+  template <typename K, typename V>
+  BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.data}, left{nullptr}, right{nullptr} {
+    if (old.left){
+      Node * old_node_l {old.left.get()};
+      left.reset(new Node{*old_node_l});  // recursively call copy constructor
+      left->up = old_node_l;
+    }
+    if (old.right){
+      Node * old_node_r {old.right.get()};
+      right.reset(new Node{*old_node_r});  // recursively call copy constructor
+      right->up = old_node_r->up;
+    }
+  }
+
+
+
 
 
   /* BEGIN OF CLASS BST<K,V>::ConstIterator */
@@ -137,13 +201,13 @@ public:
       tmp = tmp->left.get();
     }
     ConstIterator i {tmp};
-    std::cout<< "ConstIterator Begin = " << *i << std::endl;
+    //std::cout<< "ConstIterator Begin = " << *i << std::endl;
     return i;
   }
 
-  /*
+
   template <typename K, typename V>
-  typename BST<K,V>::ConstIterator BST<K,V>::end() const {
+  typename BST<K,V>::ConstIterator BST<K,V>::last() const {
   using Node =  BST<K,V>::Node;
   using Iterator =  BST<K,V>::Iterator;
   Node * tmp {root.get()};
@@ -155,7 +219,7 @@ Iterator i {tmp};
 std::cout<< "End = " << *i << std::endl;
 return i;
 }
-*/
+
 
 
 template <typename K, typename V>
@@ -168,13 +232,13 @@ typename BST<K,V>::ConstIterator BST<K,V>::cbegin() const {
     tmp = tmp->left.get();
   }
   ConstIterator i {tmp};
-  std::cout<< "ConstIterator Begin = " << *i << std::endl;
+  //std::cout<< "ConstIterator Begin = " << *i << std::endl;
   return i;
 }
 
-/*
+
 template <typename K, typename V>
-typename BST<K,V>::ConstIterator BST<K,V>::cend() const {
+typename BST<K,V>::ConstIterator BST<K,V>::clast() const {
 using Node =  BST<K,V>::Node;
 using ConstIterator =  BST<K,V>::ConstIterator;
 Node * tmp {root.get()};
@@ -183,10 +247,10 @@ while(tmp->right.get()!=nullptr)
 tmp = tmp->right.get();
 }
 ConstIterator i {tmp};
-std::cout<< "ConstIterator End = " << *i << std::endl;
+//std::cout<< "ConstIterator End = " << *i << std::endl;
 return i;
 }
-*/
+
 
 
 
@@ -198,41 +262,41 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
   Node * get_leftmost(Node * start);
   Node * get_rightmost(Node * start);
 
-public:
-  Iterator(Node* n) : current{n} {}
-  V& operator*() const { return current->data.second; }
-  K& get_key() const { return current->data.first; }
-  // ++it
-  Iterator& operator++() {  // now take care of issues when calling operator++
-    // on the node having the greatest key!
-    Node * tmp = current->right.get();
-    if( tmp!=nullptr ){
-      current = BST<K,V>::Iterator::get_leftmost(tmp);
+  public:
+    Iterator(Node* n) : current{n} {}
+    V& operator*() const { return current->data.second; }
+    K& get_key() const { return current->data.first; }
+    // ++it
+    Iterator& operator++() {  // now take care of issues when calling operator++
+      // on the node having the greatest key!
+      Node * tmp = current->right.get();
+      if( tmp!=nullptr ){
+        current = BST<K,V>::Iterator::get_leftmost(tmp);
+      }
+      else{
+        current = current->up;
+      }
+      return *this;
     }
-    else{
-      current = current->up;
+
+    Iterator operator++(int) {  // now take care of issues when calling operator++
+      // on the node having the greatest key!
+      Iterator it{current};
+      ++(*this);
+      return it;
     }
-    return *this;
-  }
 
-  Iterator operator++(int) {  // now take care of issues when calling operator++
-    // on the node having the greatest key!
-    Iterator it{current};
-    ++(*this);
-    return it;
+    bool operator==(const Iterator& other) {
+      return this->current == other.current;
+    }
+    /* The following is wrong. You're comparing iterators, not hte data holded by them
+    These data may not exist (eg if Iterator == Iterator{nullptr})
+    bool operator==(const Iterator& other) {
+    return this->current->data.second == other.current->data.second;
   }
+  */
 
-  bool operator==(const Iterator& other) {
-    return this->current == other.current;
-  }
-  /* The following is wrong. You're comparing iterators, not hte data holded by them
-  These data may not exist (eg if Iterator == Iterator{nullptr})
-  bool operator==(const Iterator& other) {
-  return this->current->data.second == other.current->data.second;
-}
-*/
-
-bool operator!=(const Iterator& other) { return !(*this == other); }
+    bool operator!=(const Iterator& other) { return !(*this == other); }
 
 
 };
@@ -295,12 +359,12 @@ typename BST<K,V>::Iterator BST<K,V>::begin(){
     tmp = tmp->left.get();
   }
   Iterator i {tmp};
-  std::cout<< "Begin = " << *i << std::endl;
+  // std::cout<< "Begin = " << *i << std::endl;
   return i;
 }
-/*
+
 template <typename K, typename V>
-typename BST<K,V>::Iterator BST<K,V>::end(){
+typename BST<K,V>::Iterator BST<K,V>::last(){
 using Node =  BST<K,V>::Node;
 using Iterator =  BST<K,V>::Iterator;
 Node * tmp {root.get()};
@@ -312,7 +376,7 @@ Iterator i {tmp};
 std::cout<< "End = " << *i << std::endl;
 return i;
 }
-*/
+
 
 
 
@@ -335,18 +399,15 @@ void BST<K,V>::erase_tree(){
 
 
 template <typename K, typename V>
-int BST<K,V>::insert_node( const K& k, const V& v ){
+void BST<K,V>::insert_node( const K& k, const V& v ){
   if (root.get() == nullptr){
     root.reset(new Node{k,v});
-    return 1;
   }
   else {
     Node* tmp{root.get()};
-    int check = BST::cmp_key(tmp, k, v);
-    return check;
+    BST::cmp_key(tmp, k, v);
   }
 }
-
 
 /* populate_tree(istream&) makes the same job
 template <typename K, typename V>
@@ -363,14 +424,52 @@ int BST<K,V>::insert_nodes(std::istream& i_str ){
 }
 */
 
+template <typename K, typename V>
+int BST<K,V>::find_key(const K& k){
+  Node* tmp{root.get()};
+  find(tmp, k);
+  return 1;
+}
 
+  template <typename K, typename V>
+  int BST<K,V>::find(Node * tmp, const K& k){
+  /** One starts srearching from the root or any of the nodes possible*/
+
+  if (check_eq_keys(k, tmp->data.first) ) {
+    std::cout << "The key has been found."<< k << std::endl;
+    return 2;
+  }
+
+  /** Entering in the left banch from the starting node if not found.*/
+  else if (k < tmp->data.first) {
+    if(tmp->left == nullptr)
+    std::cout << "key is not present in the tree." << '\n';
+    else{
+      tmp = tmp->left.get();
+      BST::find(tmp, k);
+    }
+    return 1;
+  }
+
+  /** Entering in the left banch from the starting node if not found.*/
+  else {
+    if(tmp->right == nullptr){
+      std::cout << "key is not present in the tree." << '\n';
+  }
+    else{
+      tmp = tmp->right.get();
+      BST::find(tmp, k);
+    }
+    return 1;
+  }
+}
 
 template <typename K, typename V>
-int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
+void BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
   if (check_eq_keys(k, tmp->data.first) ){ // to be placed first to take care of == comparison
                                            // for type double variables
     tmp->data.second = v;
-    return 2; // should throw an exception
+    //return 2; // should throw an exception
   }
   else if(k < tmp->data.first){
     tmpUp = tmp;
@@ -381,7 +480,7 @@ int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
       tmp = tmp->left.get();
       BST::cmp_key(tmp, k, v, tmpUp);
     }
-    return 1;
+    //return 1;
   }
   else{
     if(tmp->right == nullptr)
@@ -390,7 +489,7 @@ int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
       tmp = tmp->right.get();
       BST::cmp_key(tmp, k, v, tmpUp);
     }
-    return 1;
+    //return 1;
   }
 }
 
@@ -398,10 +497,22 @@ int BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
 
 template <typename K, typename V>
 void BST<K,V>::print_tree(){
-  for (const auto& x : *this)
-  std::cout << x << std::endl;
+  //using cIt = BST<K,V>::ConstIterator;
+    // for (const auto& x : *this)
+    //  std::cout << " : "<< x << std::endl;
+    for (auto i=this->cbegin(); i!=this->cend(); ++i)
+        std::cout << i.get_key() << " : " << *i << std::endl;
 }
 
+
+/* TO BE TESTED!!! XXXXXXXXXX
+template <typename K, typename V>
+std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
+  for (const auto& x : *tree)
+    os << x << std::endl;
+  return os;
+}
+*/
 
 
 template <typename K, typename V>
@@ -442,7 +553,8 @@ void BST<K,V>::populate_tree(){
   while (std::getline(std::cin, line)){
     std::stringstream ss(line);
     if (ss >> k >> v){
-      int check = BST::insert_node(k,v); // check error or throw exception. to be cmpleted
+      // std::cout << k << v <<'\n';
+      BST::insert_node(k,v); // check error or throw exception. to be cmpleted
       //std::cout << check << '\n';
     }
   }
@@ -456,11 +568,66 @@ void BST<K,V>::populate_tree(std::istream& i_str){
   while (std::getline(i_str, line)){
     std::stringstream ss(line);
     if (ss >> k >> v){
-      int check = BST::insert_node(k,v); // check error or throw exception. to be cmpleted
+      // std::cout << k << v <<'\n';
+      BST::insert_node(k,v); // check error or throw exception. to be cmpleted
       //std::cout << check << '\n';
     }
   }
 }
+
+/** returns maximum of two integers */
+template <typename K, typename V>
+int BST<K,V>::max(int a, int b){
+  return (a >= b)? a: b;
+
+}
+
+/** This function gives us the output for the biggest branch in the tree
+if started from the root of the tree  */
+template <typename K, typename V>
+int BST<K,V>::height(Node * tmp){
+   if(tmp == nullptr)
+       return 0;
+
+   /** If tree is not empty then height = 1 + max of leftheight and right heights */
+   return 1 + max(height(tmp->left.get()), height(tmp->right.get()));
+}
+/** Returns true if binary tree with root as root is height-balanced */
+template <typename K, typename V>
+bool BST<K,V>::is_same_height(Node * tmp){
+
+  int lh; /* for height of left subtree */
+  int rh; /* for height of right subtree */
+
+   /** If the tree is empty.*/
+   if(tmp == nullptr){
+     std::cout << "The tree is balanced" << '\n';
+     return true;
+   }
+
+   /* Get the height of left and right sub trees */
+   lh = height(tmp->left.get());
+   rh = height(tmp->right.get());
+
+   if( abs(lh-rh) <= 1 && is_same_height(tmp->right.get()) && is_same_height(tmp->left.get())){
+     std::cout << "The tree is balanced" << '\n';
+     return true;
+   }
+
+   /** In this point the tree is not balanced with respect to the chosen root.
+   Which signifies that at some level/height all the nodes don't have the same
+   number of childeren nodes.*/
+   // std::cout << "The tree is not balanced" << '\n';
+   return false;
+}
+
+template <typename K, typename V>
+int BST<K,V>::isBalanced(){
+  Node* tmp{root.get()};
+  if(!is_same_height(tmp)) std::cout << "tree is not balanced" << '\n';;
+  return 0;
+}
+
 
 
 

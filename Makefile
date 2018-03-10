@@ -17,7 +17,7 @@ $(EXE): $(OBJ)
 bst_main.o: ./include/ap_error.h ./include/bst.h
 
 clean:
-	rm -rf ./src/*.o *.o src/*~ include/*~ *~ html latex a.out $(EXE)
+	rm -rf ./src/*.o *.o src/*~ include/*~ *~ html latex $(EXE)
 
 doc: Doxygen/doxy.in
 	doxygen $^

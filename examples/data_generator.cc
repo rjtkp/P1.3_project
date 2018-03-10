@@ -27,15 +27,15 @@ int main()
   int n;
   std::cout << "Enter the number of data that you want to generate" << '\n';
   std::cin >> n;
-  myfile.open ("example");
+  std::ofstream outfile ("example");
   for (int i = 0; i < n; i++) {
     std::string str;
     for(int z=0; z < 5; z++){
     str +=  genRandom();
     }
-    myfile << rand()%20 << "   " << str << "\n";
+    outfile << rand()%20 << "   " << str << "\n";
   }
 
-  myfile.close();
+  outfile.close();
   return 0;
 }

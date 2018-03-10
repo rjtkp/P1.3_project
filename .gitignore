@@ -3,16 +3,4 @@
 *.o
 *.inp
 *.so
-*.gch
-*.*.*
 *.out
-*.ko
-*.obj
-*.pch
-*.lib
-*.a
-*.lo
-*.exe
-*.out
-*.mod*
-*~*
