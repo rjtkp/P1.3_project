@@ -81,11 +81,11 @@ int main(){
 
   
   /******* CHECKING TREE ERASURE ********/
-  // bst.erase_tree()  // uncomment after adding error handling
-  // bst2.erase_tree()
-  bst3.erase_tree()
-  // bst4.erase_tree()
-  // bst5.erase_tree()
+  // bst.erase_tree();  // uncomment after adding error handling
+  // bst2.erase_tree();
+  bst3.erase_tree();
+  // bst4.erase_tree();
+  // bst5.erase_tree();
   //******* END CHECKING TREE ERASURE ********/
   
   
