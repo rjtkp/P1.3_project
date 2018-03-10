@@ -2,7 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <utility>
- #include <bst.h>
+#include <bst.h>
 // #include <bst_iterator.h>
 //#include <bst_all.h>
 #include <ap_error.h>
@@ -14,37 +14,74 @@ int main(){
   std::istringstream iss1("344 344");
 
 
+  BST<double, double> bstd {};
+  bstd.populate_tree();
+  bstd.print_tree();
+
+
+
+
+  /*
   BST<int, int> bst {};
   bst.populate_tree(); // read automatically from std::cin
   //bst.populate_tree(std::cin); // read from a specified istream
-  bst.populate_tree(iss);
-  bst.populate_tree(iss1);
-  /*
-  auto i = bst.begin();
-  auto k = bst.end();
-  auto j = bst.cbegin();
-  auto l = bst.cend();
+  //bst.print_tree();
+
+  BST<int, int> bst2{bst};
+  bst2.print_tree();
+
+  BST<int, int> bst3;
+  bst3 = bst2;
+  std::cout << "\nprint 3" <<std::endl;
+  bst3.print_tree();
+
+  BST<int, int> bst4{std::move(bst)};
+  BST<int, int> bst5;
+  bst5 = std::move(bst2);
+  std::cout << "bst4 After move assignment"<<std::endl;
+  bst4.print_tree();
+  std::cout << "bst5 After move assignment"<<std::endl;
+  bst5.print_tree();
   */
 
-auto it = bst.cbegin();
-auto it_end = bst.cend();
-for (; it != it_end; ++it){
-  std::cout << *it << std::endl;
-}
-
-  bst.insert_node(0,0);
-  bst.insert_node(100,100);
-
-  for (const auto& x : bst)
-    std::cout << x << std::endl;
-
-  std::cout << "/* message */" << std::endl;
-  bst.print_tree();
-  bst.erase_tree();
+//
+//   bst.populate_tree(iss);
+//   bst.populate_tree(iss1);
+//   /*
+//   auto i = bst.begin();
+//   auto k = bst.end();
+//   auto j = bst.cbegin();
+//   auto l = bst.cend();
+//   */
+//
+// auto it = bst.cbegin();
+// auto it_end = bst.cend();
+// for (; it != it_end; ++it){
+//   std::cout << *it << std::endl;
+// }
+//
+//   bst.insert_node(0,0);
+//   bst.insert_node(100,100);
+//
+//   for (const auto& x : bst)
+//     std::cout << x << std::endl;
+//
+//   std::cout << "/* message */" << std::endl;
+//   bst.print_tree();
+//   bst.erase_tree();
 
   /*
+  std::cout << "Try clast"<< std::endl;
+   auto j = bst5.cbegin();
+   auto l = bst5.clast();
+
+
   std::cout<< " ConstIterator cbegin j="<<*j<<std::endl;
-  std::cout<< "ConstIterator cend l="<<*l<<std::endl;
+  std::cout<< "ConstIterator last l="<<*l<<std::endl;
+  */
+
+
+/*
 
   j++;
   *i=20;
