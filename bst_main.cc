@@ -99,7 +99,7 @@ int main(){
   bst.max(11,12);
   std::cout <<"the bigger one is:" << bst.max(11,12) << '\n';
   bst.isBalanced( );
-  bst.erase_tree();
+  //bst.erase_tree();
 //******* END CHECKING TREE ERASURE ********/
 
 
