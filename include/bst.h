@@ -17,10 +17,6 @@
 #include <cmath>
 
 
-/*
-TO DO: Introduce functions last to pick up the last element.
-*/
-
 
 
 /** Class Binary Search Tree (BST). Templated on both the key and the value stored in each node.
@@ -30,50 +26,77 @@ class BST{
   /** Struct Node: the fundamental brick in a BST which registers a pair (K, V).  */
   struct Node{
     /** Key-value pair in the node.
-    std::pair defined in header <utility>.
     data.first stores the key.
     data.second stores the associated value.
     */
-    /*typedef std::unique_ptr<std::pair<K, V>> pair; pair data;*/
     std::pair<K, V> data;
-    /** Left link of the current node in the BST. */
+    /** Left child of the current node in the BST. */
     std::unique_ptr<Node> left;
-    /** Right link of the current node in the BST. */
+    /** Right child of the current node in the BST. */
     std::unique_ptr<Node> right;
-    /** Up link of the current node. It stores the address of the last node passed form left. */
+    /** Up link of the current node. It stores the address of the last node passed from the left. */
     Node * up;
 
-
+    /** Default ctor for a Node. (Ctor0)
+    * It leaves uninitialized all the data members of the created Node.
+    */
     Node() {}
-    /** Plain "DWIM" ctor for a new Node.
-    * It stores the input key and value into the templated std::pair data  and
-    * and sets both the left and the right links to nullptr.
+
+    /** Ctor for a Node (Ctor1).
+    * It stores the input key and value into the templated std::pair data and
+    * sets both its children  Node * left and the Node * right to nullptr.
     */
     Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
       /*
       Iterator i {this};
       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
       */
-    }// custom ctor
+    }
+
+    /** Ctor for a Node (Ctor2).
+    * In addition to initializing the Node members std::pair data, Node * left and the Node * right
+    * it also sets the Node member Node * up.
+    */
     Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
       /*
       Iterator i {this};
       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"  Up: " << this->up << " key: "<< i.get_key()<<std::endl;
       */
-    }// custom ctor
+    }
 
+    /** Copy ctor for a Node */
     Node(const Node & old);
+
     //Node& operator=(const Node &);
   }; // end of struct Node
 
-  /** Unique ptr to the root node. The gateway to the BST. */
+  /** Unique ptr to the root node in the tree. */
   std::unique_ptr<Node> root;
 
+  /** Auxiliary function which checks whether two nodes are storing the same key.
+  * It's been overloaded for keys of type double. For this case, the object-like macro
+  * TOL set in bst.h defines the tolerance for the comparison (fabs(a-b)<TOL ? true : false)
+  */
   bool check_eq_keys(const K& a, const K& b);
+  /**
+  * Auxiliary function which compares the key K with the key of the Node pointed by tmp.
+  * If K < tmp->data.first and tmp->left == nullptr, the function creates the node tmp->left featuring key
+  * K, value V and Node * up = tmp (case 1).
+  * If K > tmp->data.first and tmp->right == nullptr, the function creates the node tmp->right featuring key
+  * K, value V and Node * up = nullptr (that is the default value for tmpUp) (case 2).
+  * If K == tmp->data.first (actually if check_eq_keys(K, tmp->data.first)==true), the function replaces
+  * tmp->data.second with V and leaves all the other members in the node unaltered (case 3).
+  * If K != tmp->data.first (actually if check_eq_keys(K, tmp->data.first)==false) and tmp->left!=nullptr
+  * (tmp->right!=nullptr), the function calls itself recursively to compare K with tmp->left.data.first
+  * (tmp->right.data.second) until case 1 (2) is reached.
+  */
+  void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
 
 public:
-  /** Default ctor for a BST. It initializes a Tree with no nodes. */
+  /** Default ctor for a BST. The tree root is initialized to nullptr. */
   BST(): root{nullptr} {}
+
+  /** Copy ctor for a BST. */
   BST(const BST & old) {
     Node * tmp = old.root.get();
     //root.reset(new Node()); // check if already allocated!!!
@@ -82,14 +105,16 @@ public:
     //root{tmp}; // cannot do this: root is a smart pointer
   }
 
+  /** Move ctor for a BST. */
   BST(BST && old): root{std::move(old.root)} {}
 
+  /** Move assignment for a BST. */
   BST & operator=(BST&& old) {
     root = std::move(old.root);
     return *this;
   }
 
-
+  /** Copy assignment for a BST. */
   BST & operator=(const BST & old){
     // must be declared within the class
     //https://stackoverflow.com/questions/871264/what-does-operator-must-be-a-non-static-member-mean
@@ -101,9 +126,14 @@ public:
   }
 
 
-
+  /** It inserts a new node having key K and value V in the tree.
+  * The function first checks whether root has been already allocated. If not,
+  * it allocates the root and it stores K into root->data.first and V into root->data.second.
+  * Otherwise, the function makes use of the recursive function cmp_key to insert the new node at
+  * the right place in the tree.
+  * The tree is left unbalanced after the insertion.
+  */
   void insert_node(const K& k, const V& v);
-  void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
   void populate_tree();
   void populate_tree(std::istream& i_str);
   void print_tree();
@@ -216,7 +246,6 @@ public:
   tmp = tmp->right.get();
 }
 Iterator i {tmp};
-std::cout<< "End = " << *i << std::endl;
 return i;
 }
 
@@ -373,7 +402,6 @@ while(tmp->right.get()!=nullptr)
 tmp = tmp->right.get();
 }
 Iterator i {tmp};
-std::cout<< "End = " << *i << std::endl;
 return i;
 }
 
