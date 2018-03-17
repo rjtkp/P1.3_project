@@ -649,7 +649,9 @@ bool BST<K,V>::is_bced(BST<K,V>::Node * loc_root){
   ConstIterator i=this->cbegin();
   for (; i!=it_root; ++i)
     ++sx;
+  std::cout<<*i<<std::endl;
   ++i;
+  std::cout<<*i<<std::endl;
   for (; i!=this->cend(); ++i)
     ++dx;
 
