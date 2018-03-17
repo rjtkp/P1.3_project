@@ -94,6 +94,7 @@ class BST{
   * (tmp->right.data.second) until case 1 (2) is reached.
   */
   void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
+  bool is_bced(Node * loc_root);
 
 
 
@@ -627,9 +628,34 @@ std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
 
 template <typename K, typename V>
 void BST<K,V>::balance_tree(){
+  Node * loc_root {root.get()};
+  // while ....{
+  //  1. vedere se "albero innestato in loc_root è bilanciato"
+  bool bced = is_bced(loc_root);
+  std::cout<< "Is the tree balanced?  "<< bced <<std::endl<<std::endl;
 
+  //  2. If sbilanciato:  Bilanciarlo
+  // }
 }
 
+template <typename K, typename V>
+bool BST<K,V>::is_bced(BST<K,V>::Node * loc_root){
+  using ConstIterator = BST<K,V>::ConstIterator;
+  int sx{};
+  int dx{};
+
+  //if(this.cbegin()!=nullptr) //... do error handling!!
+  ConstIterator it_root {loc_root};
+  ConstIterator i=this->cbegin();
+  for (; i!=it_root; ++i)
+    ++sx;
+  ++i;
+  for (; i!=this->cend(); ++i)
+    ++dx;
+
+  if( abs(dx-sx) > 1) return false;
+  else return true;
+}
 
 
 

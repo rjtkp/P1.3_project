@@ -9,14 +9,15 @@
 
 
 int main(){
-
-
   /******** CHECKING BST<int, int>, printing, node insertion, balance status ********/
 
   BST<int, int> bst {};
   bst.populate_tree(); // read automatically from std::cin
   //bst.populate_tree(std::cin) // also works
   bst.print_tree();
+
+  bst.balance_tree();
+
 
   std::istringstream iss("34 34");
   std::istringstream iss1("344 344");
