@@ -14,7 +14,7 @@ int main(){
   std::istringstream iss("34 34");
   if (bst.isBalanced( )) std::cout << "balanced" << '\n';
   std::istringstream iss1("344 344");
-  if (bst.isBalanced( )) std::cout << "balanced" << '\n';
+  // if (bst.isBalanced( )) std::cout << "balanced" << '\n';
 
 
 
@@ -38,9 +38,9 @@ for (; it != it_end; ++it){
 }
 
   bst.insert_node(0,0);
-  if (bst.isBalanced( )) std::cout << "balanced" << '\n';
+  if (bst.isBalanced()) std::cout << "balanced" << '\n';
   bst.insert_node(100,100);
-  if (bst.isBalanced( )) std::cout << "balanced" << '\n';
+  if (bst.isBalanced()) std::cout << "balanced" << '\n';
 
   for (const auto& x : bst)
     std::cout << x << std::endl;

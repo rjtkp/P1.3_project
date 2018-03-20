@@ -94,6 +94,10 @@ public:
   bool is_same_height(Node * tmp);
   int max(int a, int b);
   int height(Node * tmp);
+  int height_differnce(Node * tmp);
+  Node * height_diff(Node * tmp);
+   // balaced_insert();
+
 
 
   class Iterator;
@@ -561,8 +565,19 @@ int BST<K,V>::isBalanced(){
   return 0;
 }
 
+/** Get difference of height between the right and left child of the node. */
+template <typename K, typename V>
+int BST<K,V>::height_differnce(Node * tmp){
+  if (tmp == nullptr)
+    return 0;
+  return height(tmp->left.get()) - height(tmp->right.get());
+}
 
 
+template <typename K, typename V>
+typename BST<K,V>::Node *  BST<K,V>::height_diff(Node * tmp){
+  return tmp;
+}
 
 
 
