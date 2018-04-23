@@ -1,28 +1,40 @@
-# Makefile for BST exam
-EXE=bst.x
-CFLAGS=-I ./include -ggdb -O3  -Wall -Wextra -std=c++11
-CXX=g++
-VPATH=.#:./src
-SRC=bst_main.cc
-OBJ=$(SRC:%.cc=%.o)
+# -*- Makefile -*-                                                                                  
+SHELL=/bin/bash
+ROOTDIR=.
+ESDIR=$(ROOTDIR)/examples
+EXE=./bst.x
 
-default: $(EXE)
+compile:
+	$(MAKE) $(MFLAGS) -C src compile
 
-$(EXE): $(OBJ)
-	$(CXX) $^ -o $@ $(CFLAGS)
+test1:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es1.inp
+test2:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es2.inp
+test3:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es3.inp
+test4:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es4.inp
+test5:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es5.inp
 
-%.o: %.cc
-	$(CXX) -c $< -o $@ $(CFLAGS)
+test_bal:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/balanced1.inp
 
-bst_main.o: ./include/ap_error.h ./include/bst.h
+bst_doc:
+	$(MAKE) $(MFLAGS) -C src doc
+
+#part1:
+#	$(MAKE) $(MFLAGS) -C src part1
 
 clean:
-	rm -rf ./src/*.o *.o src/*~ include/*~ *~ html latex $(EXE)
+	$(MAKE) $(MFLAGS) -C src clean
+	rm -f ./*~ 
 
-doc: Doxygen/doxy.in
-	doxygen $^
-
-check:./bst.x
-	./bst.x < examples/es1.inp 
-
-.PHONY: clean doc
+.PHONY: clean default test1 test2 test3 test4 test5 test_bal doc
