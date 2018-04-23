@@ -94,6 +94,8 @@ class BST{
   * (tmp->right.data.second) until case 1 (2) is reached.
   */
   void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
+
+  // XXXXXXXXXX To be documented
   bool is_bced(Node * loc_root);
 
 
@@ -129,7 +131,7 @@ public:
     using Node =  BST<K,V>::Node;
     Node * tmp = old.root.get();
     root.reset(new Node{*tmp});
-    root->up = nullptr; // without this, root->up would remain uninitialized. Valgrinf would raise an error.
+    root->up = nullptr; // without this, root->up would remain uninitialized. Valgrind would raise an error.
     return *this;
   }
 
@@ -167,7 +169,7 @@ public:
   int height(Node * tmp);
 
   /** Iterator on the nodes in the tree. It inherits publicily the data and methods of
-  std::iterator<std::bidirectional_iterator_tag, V>, where V is the data type of the value.
+  std::iterator<std::forward_iterator_tag, V>, where V is the data type of the value.
   */
   class Iterator;
 
@@ -191,7 +193,7 @@ public:
     /** Iterator last() returns an iterator to the node storing the greatest key in the tree. */
     Iterator last();
 
-    /** ConstIterator on the nodes in the tree. It inherits publicily the data and methods of the Iterator class, which in turns inherits publicily from std::iterator<std::bidirectional_iterator_tag, V>, where V is the data type of the value.
+    /** ConstIterator on the nodes in the tree. It inherits publicily the data and methods of the Iterator class, which in turns inherits publicily from std::iterator<std::forward_iterator_tag, V>, where V is the data type of the value.
     */
     class ConstIterator;
 
@@ -266,7 +268,7 @@ public:
 
   template <typename K, typename V>
   typename BST<K,V>::ConstIterator BST<K,V>::begin() const {
-    using Node =  BST<K,V>::Node;
+//    using Node =  BST<K,V>::Node;
     using ConstIterator =  BST<K,V>::ConstIterator;
 
     ConstIterator i;
@@ -308,7 +310,7 @@ return i;
 
 template <typename K, typename V>
 typename BST<K,V>::ConstIterator BST<K,V>::cbegin() const {
-  using Node =  BST<K,V>::Node;
+  //using Node =  BST<K,V>::Node;
   using ConstIterator =  BST<K,V>::ConstIterator;
 
 
@@ -352,7 +354,7 @@ return i;
 
 /* BEGIN OF CLASS BST<K,V>::Iterator */
 template <typename K, typename V>
-class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag, V> {
+class BST<K,V>::Iterator : public std::iterator<std::forward_iterator_tag, V> {
   using Node =  BST<K,V>::Node;
   Node* current;
 
