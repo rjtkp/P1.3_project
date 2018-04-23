@@ -625,6 +625,11 @@ std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
 }
 */
 
+template <typename K, typename V>
+  void BST<K,V>::balance_tree(){
+
+}
+
 
 template <typename K, typename V>
 void BST<K,V>::balance_tree2(){

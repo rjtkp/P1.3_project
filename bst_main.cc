@@ -16,7 +16,7 @@ int main(){
   //bst.populate_tree(std::cin) // also works
   bst.print_tree();
 
-  bst.balance_tree();
+  bst.balance_tree2();
 
 
   std::istringstream iss("34 34");
