@@ -156,7 +156,7 @@ public:
   */
   void print_tree();
   void balance_tree();
-
+  void balance_tree2();
   /** void erase_tree() destruct safely all the nodes in the tree, including root. */
   void erase_tree();
   int find(Node * tmp, const K& k);
@@ -627,7 +627,7 @@ std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
 
 
 template <typename K, typename V>
-void BST<K,V>::balance_tree(){
+void BST<K,V>::balance_tree2(){
   Node * loc_root {root.get()};
   // while ....{
   //  1. vedere se "albero innestato in loc_root è bilanciato"
