@@ -218,26 +218,31 @@ typename BST<K, V>::ConstIterator BST<K, V>::begin() const {
   if (tmp != nullptr) {
     while (tmp->left.get() != nullptr)
       tmp = tmp->left.get();
+    }
+    ConstIterator i {tmp};
+    //std::cout<< "ConstIterator Begin = " << *i << std::endl;
+    return i;
   }
   ConstIterator i{tmp};
   // std::cout<< "ConstIterator Begin = " << *i << std::endl;
   return i;
 }
 
-/*
-template <typename K, typename V>
-typename BST<K,V>::ConstIterator BST<K,V>::end() const {
-using Node =  BST<K,V>::Node;
-using Iterator =  BST<K,V>::Iterator;
-Node * tmp {root.get()};
-if(tmp!=nullptr){
-while(tmp->right.get()!=nullptr)
-tmp = tmp->right.get();
+
+  template <typename K, typename V>
+  typename BST<K,V>::ConstIterator BST<K,V>::last() const {
+  using Node =  BST<K,V>::Node;
+  using Iterator =  BST<K,V>::Iterator;
+  Node * tmp {root.get()};
+  if(tmp!=nullptr){
+  while(tmp->right.get()!=nullptr)
+  tmp = tmp->right.get();
 }
 Iterator i {tmp};
 std::cout<< "End = " << *i << std::endl;
 return i;
 }
+
 
 
 template <typename K, typename V>
@@ -249,8 +254,8 @@ typename BST<K, V>::ConstIterator BST<K, V>::cbegin() const {
     while (tmp->left.get() != nullptr)
       tmp = tmp->left.get();
   }
-  ConstIterator i{tmp};
-  // std::cout<< "ConstIterator Begin = " << *i << std::endl;
+  ConstIterator i {tmp};
+  //std::cout<< "ConstIterator Begin = " << *i << std::endl;
   return i;
 }
 
@@ -268,6 +273,8 @@ ConstIterator i {tmp};
 //std::cout<< "ConstIterator End = " << *i << std::endl;
 return i;
 }
+
+
 
 
 /* BEGIN OF CLASS BST<K,V>::Iterator */
@@ -296,25 +303,26 @@ class BST<K, V>::Iterator
       return *this;
     }
 
-  Iterator operator++(int) { // now take care of issues when calling operator++
-    // on the node having the greatest key!
-    Iterator it{current};
-    ++(*this);
-    return it;
-  }
+    Iterator operator++(int) {  // now take care of issues when calling operator++
+      // on the node having the greatest key!
+      Iterator it{current};
+      ++(*this);
+      return it;
+    }
 
-  bool operator==(const Iterator &other) {
-    return this->current == other.current;
+    bool operator==(const Iterator& other) {
+      return this->current == other.current;
+    }
+    /* The following is wrong. You're comparing iterators, not hte data holded by them
+    These data may not exist (eg if Iterator == Iterator{nullptr})
+    bool operator==(const Iterator& other) {
+    return this->current->data.second == other.current->data.second;
   }
-  /* The following is wrong. You're comparing iterators, not hte data holded by
-them
-  These data may not exist (eg if Iterator == Iterator{nullptr})
-  bool operator==(const Iterator& other) {
-  return this->current->data.second == other.current->data.second;
-}
-*/
+  */
 
-  bool operator!=(const Iterator &other) { return !(*this == other); }
+    bool operator!=(const Iterator& other) { return !(*this == other); }
+
+
 };
 
 template <typename K, typename V>
@@ -378,6 +386,17 @@ Iterator i {tmp};
 std::cout<< "End = " << *i << std::endl;
 return i;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 template <typename K, typename V> void BST<K, V>::erase_tree() { root.reset(); }
