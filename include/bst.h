@@ -29,7 +29,10 @@ class BST;
 */
 template <typename K, typename V>
 std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
-  for (auto i=tree.cbegin(); i!=tree.cend(); ++i)
+auto i=tree.cbegin();
+  if(i==nullptr) std::cout << "The tree is empty"<< std::endl;
+
+  for ( ; i!=tree.cend(); ++i)
     os << i.get_key() << " : " << *i << std::endl;
 
   return os;
@@ -126,6 +129,11 @@ public:
 
   /** Copy ctor for a BST. */
   BST(const BST & old) {
+    if (old.root.get()==nullptr){
+      if(this->root.get()==nullptr) std::cout << "Root initialized"<< std::endl;
+      return; //
+    }
+
     Node * tmp = old.root.get();
     //root.reset(new Node()); // check if already allocated!!!
     root.reset(new Node{*tmp});
@@ -133,8 +141,8 @@ public:
     //root{tmp}; // cannot do this: root is a smart pointer
   }
 
-  /** Move ctor for a BST. */
-  BST(BST && old): root{std::move(old.root)} {}
+  /** Move ctor for a BST. Noexcept guaranteed. */
+  BST(BST && old) noexcept: root{std::move(old.root)} {}
 
   /** Move assignment for a BST. */
   BST & operator=(BST&& old) {

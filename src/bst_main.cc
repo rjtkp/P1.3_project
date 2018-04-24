@@ -12,9 +12,12 @@ int main(){
   /******** CHECKING BST<int, int>, printing, node insertion, balance status ********/
 
   BST<int, int> bst {};
+  BST<int, int> bst2 {bst};
+
   bst.populate_tree(); // read automatically from std::cin
   //bst.populate_tree(std::cin) // also works
-  bst.print_tree();
+  //bst.print_tree();
+
   std::cout << "\n\ncout\n"<< bst<< std::endl;
 
 //
