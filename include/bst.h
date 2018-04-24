@@ -169,11 +169,13 @@ public:
   int max(int a, int b);
   int height(Node *tmp);
   int height_differnce(Node *tmp);
+  void balance();
   Node *height_diff(Node * tmp);
   Node *right_rotation(Node * tmp);
   Node *left_rotation(Node * tmp);
-  Node *balanced_insert(Node *tmp, const K &k, const V &v);
+  // Node *balanced_insert(Node *tmp, const K &k, const V &v);
   int print_as_inserted(Node * tmp);
+  void balanced_insert(Node * tmp,const std::vector<std::pair<K,V>>& vect, int left_begin, int left_end, int right_begin, int right_end);
 
 
   /** Iterator on the nodes in the tree. It inherits publicily the data and methods of
@@ -268,24 +270,13 @@ public:
 
   public:
     using parent::Iterator; // to inherit the ctor
-    const V& operator*() const { return parent::operator*(); }
+    const V& get_value() const { return parent::get_value(); }
     const K& get_key() const {return parent::get_key();}
   };
 
-/* BEGIN OF CLASS BST<K,V>::ConstIterator */
-template <typename K, typename V>
-class BST<K, V>::ConstIterator : public BST<K, V>::Iterator {
-  using parent = BST<K, V>::Iterator;
-
-public:
-  using parent::Iterator; // inher ctor
-  const V &operator*() const { return parent::operator*(); }
-  const K &get_key() const { return parent::get_key(); }
-};
-
   template <typename K, typename V>
   typename BST<K,V>::ConstIterator BST<K,V>::begin() const {
-    using Node =  BST<K,V>::Node;
+    // using Node =  BST<K,V>::Node;
     using ConstIterator =  BST<K,V>::ConstIterator;
 
     ConstIterator i;
@@ -302,10 +293,6 @@ public:
     //std::cout<< "ConstIterator Begin = " << *i << std::endl;
     return i;
   }
-  ConstIterator i{tmp};
-  // std::cout<< "ConstIterator Begin = " << *i << std::endl;
-  return i;
-}
 
 
   template <typename K, typename V>
@@ -331,7 +318,7 @@ return i;
 
 template <typename K, typename V>
 typename BST<K,V>::ConstIterator BST<K,V>::cbegin() const {
-  using Node =  BST<K,V>::Node;
+  // using Node =  BST<K,V>::Node;
   using ConstIterator =  BST<K,V>::ConstIterator;
 
 
@@ -383,7 +370,7 @@ class BST<K,V>::Iterator : public std::iterator<std::bidirectional_iterator_tag,
   public:
     Iterator() {}
     Iterator(Node* n) : current{n} {}
-    V& operator*() const { return current->data.second; }
+    V& get_value() const { return current->data.second; }
     K& get_key() const { return current->data.first; }
     void set_current(Node * curr) {current=curr;}
     Node * get_leftmost(Node * start);
@@ -633,7 +620,7 @@ void BST<K,V>::print_tree(){
     // for (const auto& x : *this)
     //  std::cout << " : "<< x << std::endl;
     for (auto i=this->cbegin(); i!=this->cend(); ++i)
-        std::cout << i.get_key() << " : " << *i << std::endl;
+        std::cout << i.get_key() << " : " << i.get_value() << std::endl;
 }
 
 
@@ -758,7 +745,7 @@ template <typename K, typename V> bool BST<K, V>::is_same_height(Node *tmp) {
 
   /** If the tree is empty.*/
   if (tmp == nullptr) {
-    std::cout << "The tree is balanced" << '\n';
+    // std::cout << "The tree is balanced" << '\n';
     return true;
   }
 
@@ -768,7 +755,7 @@ template <typename K, typename V> bool BST<K, V>::is_same_height(Node *tmp) {
 
   if (abs(lh - rh) <= 1 && is_same_height(tmp->right.get()) &&
       is_same_height(tmp->left.get())) {
-    std::cout << "The tree is balanced" << '\n';
+    // std::cout << "The tree is balanced" << '\n';
     return true;
   }
 
@@ -783,7 +770,8 @@ template <typename K, typename V> int BST<K, V>::isBalanced() {
   Node *tmp{root.get()};
   if (!is_same_height(tmp))
     std::cout << "tree is not balanced" << '\n';
-  ;
+    else
+    std::cout << "Tree is balanced" << '\n';
   return 0;
 }
 
@@ -825,18 +813,17 @@ typename BST<K, V>::Node *BST<K, V>:: left_rotation(Node * tmp){
 }
 
 template <typename K, typename V>
-typename BST<K, V>::Node *BST<K, V>:: balanced_insert(Node *tmp, const K &k, const V &v){
+typename BST<K, V>::Node *BST<K, V>:: balanced_insert_rotation(Node *tmp, const K &k, const V &v){
 
     if (tmp == nullptr) {
-      root.reset(new Node{k, v});
-      tmp = root.get();
+      root.reset(new Node{k, v, tmp});
       return tmp;
     }
 
     if (k < tmp->data.first)
-        tmp->left.reset(balanced_insert(tmp->left.get(), k, v));
+        tmp->left.reset(balanced_insert_rotation(tmp->left.get(), k, v));
     else if (k > tmp->data.first)
-        tmp->right.reset(balanced_insert(tmp->right.get(), k, v));
+        tmp->right.reset(balanced_insert_rotation(tmp->right.get(), k, v));
     else
         return tmp;
     // BST::insert_node(k,v);
@@ -863,14 +850,39 @@ typename BST<K, V>::Node *BST<K, V>:: balanced_insert(Node *tmp, const K &k, con
 }
 
 template <typename K, typename V> void BST<K, V>::balance() {
-  using ConstIterator = BST<K,V>::ConstIterator;
-    std::string line;
-    K k;
-    V v;
     std::vector<std::pair<K,V>> vect;
-
+    for (auto i=this->cbegin(); i!=this->cend(); ++i){
+        // tmp = BST:: balanced_insert(tmp, i.get_key(), *i);
+        vect.push_back( std::make_pair(i.get_key(), i.get_value()));
+        // tmp = root.get();
+    }
+    // root.reset(tmp);
+    root.reset(new Node{vect[vect.size()/2].first, vect[vect.size()/2].second, nullptr});
+    Node * tmp{root.get()};
+    BST::balanced_insert(tmp, vect, 0, vect.size()/2, vect.size()/2 + 1, vect.size());
 }
 
+template <typename K, typename V> void BST<K, V>::balanced_insert(Node *tmp, const std::vector<std::pair<K,V>>& vect, int left_begin, int left_end, int right_begin, int right_end) {
+Node * tmp1{tmp};
+  if(left_begin != left_end){
+    tmp->left.reset(new Node{ vect[(left_end+left_begin)/2].first,vect[(left_end+left_begin)/2].second, tmp });
+    tmp = tmp->left.get();
+    BST::balanced_insert(tmp, vect, left_begin, (left_end+left_begin)/2, (left_end+left_begin)/2+1, left_end);
+  }
+
+  if(right_begin != right_end) {
+    tmp1->right.reset(new Node{ vect[(right_end+right_begin)/2].first, vect[(right_end+right_begin)/2].second , tmp1->up });
+    tmp1 = tmp1->right.get();
+    BST::balanced_insert(tmp1, vect, right_begin, (right_end+right_begin)/2, (right_end+right_begin)/2+1, right_end);
+  }
+}
+
+template <typename K, typename V> void BST<K, V>::balance_rotation() {
+    for (auto i=this->cbegin(); i!=this->cend(); ++i){
+        vect.push_back( std::make_pair(i.get_key(), i.get_value()));
+        tmp = BST::balanced_insert_rotation(tmp, i.get_key(), i.get_value());
+    }
+}
 
 
 #endif
