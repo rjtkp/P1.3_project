@@ -10,9 +10,13 @@ EXEDIR=$(ROOTDIR)
 DOXYDIR=$(ROOTDIR)/Doxygen
 VPATH=$(SRCDIR)
 
+## PARAMETERS
+TOL=0.000001 # needed to compare two doubles
+
+
 ## COMPILING
 CXX=g++
-CFLAGS=-I $(HEADDIR) -O3  -Wall -Wextra
+CFLAGS=-I $(HEADDIR) -O3  -Wall -Wextra -D TOL=$(TOL)
 DBFLAGS= -g -ggdb
 LFLAGS=-std=c++11
 
@@ -40,6 +44,6 @@ doc: $(DOXYDIR)/doxy.in
 	doxygen $^
 
 #check:./bst.x
-#	./bst.x < examples/es1.inp 
+#	./bst.x < examples/es1.inp
 
 .PHONY: clean
