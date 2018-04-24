@@ -9,14 +9,15 @@
 
 
 int main(){
-
-
   /******** CHECKING BST<int, int>, printing, node insertion, balance status ********/
 
   BST<int, int> bst {};
   bst.populate_tree(); // read automatically from std::cin
   //bst.populate_tree(std::cin) // also works
   bst.print_tree();
+
+  bst.balance_tree();
+
 
   std::istringstream iss("34 34");
   std::istringstream iss1("344 344");
@@ -99,7 +100,7 @@ int main(){
   bst.max(11,12);
   std::cout <<"the bigger one is:" << bst.max(11,12) << '\n';
   bst.isBalanced( );
-  bst.erase_tree();
+  // bst.erase_tree();
 //******* END CHECKING TREE ERASURE ********/
 
 
