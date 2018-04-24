@@ -129,13 +129,9 @@ public:
 
   /** Copy ctor for a BST. */
   BST(const BST & old) {
-    if (old.root.get()==nullptr){
-      if(this->root.get()==nullptr) std::cout << "Root initialized"<< std::endl;
-      return; //
-    }
+    if (old.root.get()==nullptr) return; //the new BST is set to nullptr. Done
 
     Node * tmp = old.root.get();
-    //root.reset(new Node()); // check if already allocated!!!
     root.reset(new Node{*tmp});
     root->up = nullptr; // without this, root->up would remain uninitialized.
     //root{tmp}; // cannot do this: root is a smart pointer
@@ -183,6 +179,7 @@ public:
   In particular, the output is a sequence of N rows (where N is the number of nodes in the tree), the i-th of them displaying the key-value pair in the layout K : V
   */
   void print_tree();
+  void print_addresses();
   void balance_tree();
   void balance_tree2();
   /** void erase_tree() destruct safely all the nodes in the tree, including root. */
@@ -269,12 +266,13 @@ public:
     if (old.left){
       Node * old_node_l {old.left.get()};
       left.reset(new Node{*old_node_l});  // recursively call copy constructor
-      left->up = old_node_l;
+      //left->up = old_node_l;
+      left->up = this;
     }
     if (old.right){
       Node * old_node_r {old.right.get()};
       right.reset(new Node{*old_node_r});  // recursively call copy constructor
-      right->up = old_node_r->up;
+      right->up = this->up;
     }
   }
 
@@ -393,6 +391,7 @@ class BST<K,V>::Iterator : public std::iterator<std::forward_iterator_tag, V> {
     Iterator(Node* n) : current{n} {}
     V& operator*() const { return current->data.second; }
     K& get_key() const { return current->data.first; }
+    Node *  get_address() const { return current; }
     void set_current(Node * curr) {current=curr;}
     Node * get_leftmost(Node * start);
     Node * get_rightmost(Node * start);
@@ -645,7 +644,14 @@ void BST<K,V>::print_tree(){
     for (auto i=this->cbegin(); i!=this->cend(); ++i)
         std::cout << i.get_key() << " : " << *i << std::endl;
 }
-
+template <typename K, typename V>
+void BST<K,V>::print_addresses(){
+  //using cIt = BST<K,V>::ConstIterator;
+    // for (const auto& x : *this)
+    //  std::cout << " : "<< x << std::endl;
+    for (auto i=this->begin(); i!=this->end(); ++i)
+        std::cout << i.get_key() << " : " << *i << "  address: " << i.get_address() << std::endl;
+}
 
 
 

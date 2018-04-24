@@ -42,6 +42,21 @@ test5v:
 	$(MAKE) $(MFLAGS) -C src compile
 	valgrind $(EXE) < $(ESDIR)/es5.inp
 
+test6:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es6.inp
+test6v:
+	$(MAKE) $(MFLAGS) -C src compile
+	valgrind $(EXE) < $(ESDIR)/es6.inp
+
+test7:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es7.inp
+test7v:
+	$(MAKE) $(MFLAGS) -C src compile
+	valgrind $(EXE) < $(ESDIR)/es7.inp
+
+
 test_bal:
 	$(MAKE) $(MFLAGS) -C src compile
 	$(EXE) < $(ESDIR)/balanced1.inp
