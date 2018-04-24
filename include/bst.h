@@ -17,6 +17,22 @@
 #include <cmath>
 
 
+/* TO BE TESTED!!! XXXXXXXXXX */
+//https://stackoverflow.com/questions/15734020/error-declaration-of-operator-as-non-function
+// NB: if placed after def of BST, compiler throws error for fw declaration!
+template <typename K, typename V>
+class BST;
+
+template <typename K, typename V>
+std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
+for (auto i=tree.cbegin(); i!=tree.cend(); ++i)
+    os << i.get_key() << " : " << *i << std::endl;
+
+  //for (const auto& x : *tree)
+    //os << x << std::endl;
+  return os;
+}
+
 
 
 /** Class Binary Search Tree (BST). Templated on both the key and the value stored in each node.
@@ -47,7 +63,7 @@ class BST{
     * It stores the input key and value into the templated std::pair data and
     * sets both its children  Node * left and the Node * right to nullptr.
     */
-    Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} {
+    Node(const K& k, const V& v) : data{k,v} , left{nullptr}, right{nullptr}, up{nullptr} { // case of int and chars better
       /*
       Iterator i {this};
       std::cout<<"Node "<< *i<<" ctor. My address: "<< this  <<"Up: " << this->up << " key: "<< i.get_key()<<std::endl;
@@ -214,6 +230,9 @@ public:
 
     /** ConstIterator clast() returns a ConstIterator to the node storing the greatest key in the tree. */
     ConstIterator clast() const;
+
+
+    friend std::ostream& operator << <>(std::ostream& os, const BST<K,V> & tree);
 
 
   };
@@ -618,14 +637,7 @@ void BST<K,V>::print_tree(){
 }
 
 
-/* TO BE TESTED!!! XXXXXXXXXX
-template <typename K, typename V>
-std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
-  for (const auto& x : *tree)
-    os << x << std::endl;
-  return os;
-}
-*/
+
 
 template <typename K, typename V>
   void BST<K,V>::balance_tree(){
