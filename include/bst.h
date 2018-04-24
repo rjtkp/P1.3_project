@@ -21,15 +21,17 @@
 //https://stackoverflow.com/questions/15734020/error-declaration-of-operator-as-non-function
 // NB: if placed after def of BST, compiler throws error for fw declaration!
 template <typename K, typename V>
+
+// need to declare here BST due to use in the overloading of std::operator<<
 class BST;
 
+/** Overload of std::operator<<, to print the keys and related values.
+*/
 template <typename K, typename V>
 std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
-for (auto i=tree.cbegin(); i!=tree.cend(); ++i)
+  for (auto i=tree.cbegin(); i!=tree.cend(); ++i)
     os << i.get_key() << " : " << *i << std::endl;
 
-  //for (const auto& x : *tree)
-    //os << x << std::endl;
   return os;
 }
 
