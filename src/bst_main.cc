@@ -23,7 +23,8 @@ int main(){
 
   std::istringstream iss("7 7");
   bst.populate_tree(iss);
-
+  // std::istringstream iss2("73 73");
+//  iss2>>bst;
 
   //std::cout << "\n\ncout bst\n"<< bst<< std::endl;
 

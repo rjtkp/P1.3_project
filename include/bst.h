@@ -30,12 +30,20 @@ class BST;
 template <typename K, typename V>
 std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
 auto i=tree.cbegin();
-  if(i==nullptr) std::cout << "The tree is empty"<< std::endl;
+  if(i==nullptr) os << "Empty tree"<< std::endl;
 
   for ( ; i!=tree.cend(); ++i)
     os << i.get_key() << " : " << *i << std::endl;
 
   return os;
+}
+
+template <typename K, typename V>
+std::istream& operator>>(std::istream& is, BST<K,V>& tree) {
+
+  tree.populate_tree(is);
+
+  return is;
 }
 
 
@@ -119,6 +127,7 @@ class BST{
   // XXXXXXXXXX To be documented
   bool is_bced(Node * loc_root);
 
+  static Node * last_up;
 
 
 
@@ -129,19 +138,21 @@ public:
 
   /** Copy ctor for a BST. */
   BST(const BST & old) {
-    if (old.root.get()==nullptr) return; //the new BST is set to nullptr. Done
+    if (old.root.get()==nullptr) this->root=nullptr; //the new BST is set to nullptr. Done
 
-    Node * tmp = old.root.get();
-    root.reset(new Node{*tmp});
-    root->up = nullptr; // without this, root->up would remain uninitialized.
+    // Node * tmp = old.root.get();
+    // root.reset(new Node{*tmp});
+    root.reset(new Node{*old.root.get()});
+    //root->up = nullptr; // without this, root->up would remain uninitialized.
     //root{tmp}; // cannot do this: root is a smart pointer
   }
+  //last_up=nullptr;
 
   /** Move ctor for a BST. Noexcept guaranteed. */
   BST(BST && old) noexcept: root{std::move(old.root)} {}
 
   /** Move assignment for a BST. */
-  BST & operator=(BST&& old) {
+  BST & operator=(BST&& old) noexcept {
     root = std::move(old.root);
     return *this;
   }
@@ -151,9 +162,10 @@ public:
     // must be declared within the class
     //https://stackoverflow.com/questions/871264/what-does-operator-must-be-a-non-static-member-mean
     using Node =  BST<K,V>::Node;
-    Node * tmp = old.root.get();
-    root.reset(new Node{*tmp});
-    root->up = nullptr; // without this, root->up would remain uninitialized. Valgrind would raise an error.
+    // Node * tmp = old.root.get();
+    // root.reset(new Node{*tmp});
+    root.reset(new Node{*old.root.get()});
+    //root->up = nullptr; // without this, root->up would remain uninitialized. Valgrind would raise an error.
     return *this;
   }
 
@@ -178,12 +190,12 @@ public:
   /** print_tree() prints to stdout the content in the tree nodes in increasing order with respect to the keys.
   In particular, the output is a sequence of N rows (where N is the number of nodes in the tree), the i-th of them displaying the key-value pair in the layout K : V
   */
-  void print_tree();
-  void print_addresses();
+  void print_tree() const noexcept;
+  void print_addresses() const noexcept;
   void balance_tree();
   void balance_tree2();
   /** void erase_tree() destruct safely all the nodes in the tree, including root. */
-  void erase_tree();
+  void erase_tree() noexcept;
   int find(Node * tmp, const K& k);
   int find_key(const K& k);
   int isBalanced();
@@ -240,6 +252,7 @@ public:
 
 
     friend std::ostream& operator << <>(std::ostream& os, const BST<K,V> & tree);
+    friend std::istream& operator >> <>(std::istream& is, BST<K,V> & tree);
 
 
   };
@@ -258,22 +271,34 @@ public:
     else return false;
   }
 
-
-
+template <typename K, typename V>
+typename BST<K,V>::Node * BST<K,V>::last_up = nullptr;
 // copy ctor
   template <typename K, typename V>
-  BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.data}, left{nullptr}, right{nullptr} {
+  BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.data}, left{nullptr}, right{nullptr}, up{last_up} {
+
+    if(old.right) last_up = this->up;
+    if(old.left)  last_up = this;
+
     if (old.left){
-      Node * old_node_l {old.left.get()};
-      left.reset(new Node{*old_node_l});  // recursively call copy constructor
+      // Node * old_node_l {old.left.get()};
+      // left.reset(new Node{*old_node_l});  // recursively call copy constructor
+      left.reset(new Node{*old.left.get()});  // recursively call copy constructor
       //left->up = old_node_l;
-      left->up = this;
+      //left->up = this;
+
     }
+    //else left.reset(nullptr);
+
     if (old.right){
-      Node * old_node_r {old.right.get()};
-      right.reset(new Node{*old_node_r});  // recursively call copy constructor
-      right->up = this->up;
+      // Node * old_node_r {old.right.get()};
+      // right.reset(new Node{*old_node_r});  // recursively call copy constructor
+      right.reset(new Node{*old.right.get()});  // recursively call copy constructor
+      //right->up = this->up;
+      //right->up = last_up;
     }
+    //else right.reset(nullptr);
+    last_up = nullptr;
   }
 
 
@@ -392,6 +417,7 @@ class BST<K,V>::Iterator : public std::iterator<std::forward_iterator_tag, V> {
     V& operator*() const { return current->data.second; }
     K& get_key() const { return current->data.first; }
     Node *  get_address() const { return current; }
+    Node *  get_up() const { return current->up; }
     void set_current(Node * curr) {current=curr;}
     Node * get_leftmost(Node * start);
     Node * get_rightmost(Node * start);
@@ -530,9 +556,10 @@ return i;
 
 
 template <typename K, typename V>
-void BST<K,V>::erase_tree(){
+void BST<K,V>::erase_tree() noexcept{
   if(root!=nullptr){
     root.reset(); // does it leave root in an uninitialized state or does it make root =nullptr?
+                  // 2nd answer
   }
 }
 
@@ -545,8 +572,9 @@ void BST<K,V>::insert_node( const K& k, const V& v ){
     root.reset(new Node{k,v});
   }
   else {
-    Node* tmp{root.get()};
-    BST::cmp_key(tmp, k, v);
+    // Node* tmp{root.get()};
+    // BST::cmp_key(tmp, k, v);
+    BST::cmp_key(root.get(), k, v);
   }
 }
 
@@ -637,7 +665,7 @@ void BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
 
 
 template <typename K, typename V>
-void BST<K,V>::print_tree(){
+void BST<K,V>::print_tree() const noexcept{
   //using cIt = BST<K,V>::ConstIterator;
     // for (const auto& x : *this)
     //  std::cout << " : "<< x << std::endl;
@@ -645,12 +673,12 @@ void BST<K,V>::print_tree(){
         std::cout << i.get_key() << " : " << *i << std::endl;
 }
 template <typename K, typename V>
-void BST<K,V>::print_addresses(){
+void BST<K,V>::print_addresses() const noexcept{
   //using cIt = BST<K,V>::ConstIterator;
     // for (const auto& x : *this)
     //  std::cout << " : "<< x << std::endl;
     for (auto i=this->begin(); i!=this->end(); ++i)
-        std::cout << i.get_key() << " : " << *i << "  address: " << i.get_address() << std::endl;
+        std::cout << i.get_key() << " : " << *i << "  this: " << i.get_address()<<"  this->up: " << i.get_up() << std::endl;
 }
 
 
