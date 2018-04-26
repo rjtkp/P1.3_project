@@ -316,6 +316,11 @@ typename BST<K,V>::Node * BST<K,V>::last_up = nullptr;
     using parent::Iterator; // to inherit the ctor
     const V& operator*() const { return parent::operator*(); }
     const K& get_key() const {return parent::get_key();}
+    const Node *  get_address() const { return parent::get_address(); }
+    const Node *  get_up() const {return parent::get_up();}
+    //void set_current(const Node * curr) {this->current=curr;}
+    //const Node * get_leftmost(Node * start) const {return parent::get_leftmost(start);}
+    //const Node * get_rightmost(Node * start) const {return parent::get_rightmost(start);}
   };
 
 
@@ -420,9 +425,9 @@ class BST<K,V>::Iterator : public std::iterator<std::forward_iterator_tag, V> {
     K& get_key() const { return current->data.first; }
     Node *  get_address() const { return current; }
     Node *  get_up() const { return current->up; }
-    void set_current(Node * curr) {current=curr;}
-    Node * get_leftmost(Node * start);
-    Node * get_rightmost(Node * start);
+    void set_current( Node * curr) {current=curr;}
+    Node * get_leftmost (Node * start) const;
+    Node * get_rightmost (Node * start) const;
 
     // ++it
     Iterator& operator++() {  // now take care of issues when calling operator++
@@ -461,7 +466,7 @@ class BST<K,V>::Iterator : public std::iterator<std::forward_iterator_tag, V> {
 
 
 template <typename K, typename V>
-typename BST<K,V>::Node * BST<K,V>::Iterator::get_leftmost( BST<K,V>::Node * start){
+typename BST<K,V>::Node * BST<K,V>::Iterator::get_leftmost( BST<K,V>::Node * start) const{
   //using Node =  BST<K,V>::Node;
   //using Iterator =  BST<K,V>::Iterator;
   //Node * tmp {root.get()};
@@ -482,7 +487,7 @@ typename BST<K,V>::Node * BST<K,V>::Iterator::get_leftmost( BST<K,V>::Node * sta
 
 
 template <typename K, typename V>
-typename BST<K,V>::Node * BST<K,V>::Iterator::get_rightmost( BST<K,V>::Node * start){
+typename BST<K,V>::Node * BST<K,V>::Iterator::get_rightmost( BST<K,V>::Node * start) const {
   //using Node =  BST<K,V>::Node;
   //using Iterator =  BST<K,V>::Iterator;
   //Node * tmp {root.get()};
@@ -679,7 +684,7 @@ void BST<K,V>::print_addresses() const noexcept{
   //using cIt = BST<K,V>::ConstIterator;
     // for (const auto& x : *this)
     //  std::cout << " : "<< x << std::endl;
-    for (auto i=this->begin(); i!=this->end(); ++i)
+    for (auto i=this->cbegin(); i!=this->cend(); ++i)
         std::cout << i.get_key() << " : " << *i << "  this: " << i.get_address()<<"  this->up: " << i.get_up() << std::endl;
 }
 

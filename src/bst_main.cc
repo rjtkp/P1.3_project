@@ -23,8 +23,8 @@ int main(){
 
   std::istringstream iss("7 7");
   bst.populate_tree(iss);
-  // std::istringstream iss2("73 73");
-//  iss2>>bst;
+  std::istringstream iss2("73 73");
+ iss2>>bst;
 
   //std::cout << "\n\ncout bst\n"<< bst<< std::endl;
 
@@ -35,7 +35,7 @@ int main(){
   bst.print_addresses();
   std::cout << "\n\nbst2 addresses\n"<< std::endl;
   bst2.print_addresses();
-  std::cout << "\n\nbst3 addresses dopo aggiunta\n"<< std::endl;
+  std::cout << "\n\nbst3 addresses dopo aggiunta\n"<< bst3 << std::endl;
   bst3.print_addresses();
 
 
