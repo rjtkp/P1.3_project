@@ -194,7 +194,7 @@ public:
   /** populate_tree() reads a variable number N of rows of K V pairs from stdin and creates a tree from scratch
   * having as many nodes as the number of K V pairs. The key (value) in the Nth node inserted is set to the key K(value V) in the Nth line in input.
   */
-  void populate_tree();
+  void populate_tree() noexcept;
 
   /** populate_tree(std::istream is) reads a variable number N of K V pairs from the input std::istream and creates a tree from scratch having as many nodes as the number of K V pairs. The key (value) in the Nth node inserted is set to the key K(value V) in the Nth line in input.
   */
@@ -768,7 +768,7 @@ bool BST<K,V>::is_bced(BST<K,V>::Node * loc_root){
 
 
 template <typename K, typename V>
-void BST<K,V>::populate_tree(){
+void BST<K,V>::populate_tree() noexcept{
   std::string line;
   K k; V v;
   while (std::getline(std::cin, line)){
