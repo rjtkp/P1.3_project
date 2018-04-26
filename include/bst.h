@@ -25,7 +25,7 @@ template <typename K, typename V>
 // need to declare here BST due to use in the overloading of std::operator<<
 class BST;
 
-/** Overload of std::operator<<, to print the keys and related values.
+/** Overload of std::operator<<, to print the all the pairs key-value in the tree.
 */
 template <typename K, typename V>
 std::ostream& operator<<(std::ostream& os, const BST<K,V>& tree) {
@@ -38,6 +38,13 @@ auto i=tree.cbegin();
   return os;
 }
 
+/** Overload of std::operator<< to easily populate the tree.
+Usage example:
+BST<K,V> bst;
+std::istringstream is("k v");
+is>>bst;
+will add to the tree the Node storing the pair (k, v).
+*/
 template <typename K, typename V>
 std::istream& operator>>(std::istream& is, BST<K,V>& tree) {
 
@@ -48,31 +55,36 @@ std::istream& operator>>(std::istream& is, BST<K,V>& tree) {
 
 
 
-/** Class Binary Search Tree (BST). Templated on both the key and the value stored in each node.
+/** Class Binary Search Tree (BST). Templated on the key-value pairs K,V stored for each node in an std::pair.
+*Limitations:* Operators ==, > and < must have been already defined for data of type K. To overcome the issues of round-off errors,
+two doubles are considered to be equal if they differ at most TOL one from the other.
+The default value for TOL is 1e6. This value can be set in $(SRCDIR)/Makefile before compiling.
 */
 template <typename K, typename V>
 class BST{
 
-  /** Struct Node: the fundamental brick in a BST which registers a pair (K, V).  */
+  /** Struct Node: the fundamental brick in the BST which stores a std::pair (K, V).
+  */
   struct Node{
     /** Key-value pair in the node.
-    data.first stores the key.
-    data.second stores the associated value.
+    data.first stores the key (type K).
+    data.second stores the associated value (type V).
     */
     std::pair<K, V> data;
     /** Left child of the current node in the BST. */
     std::unique_ptr<Node> left;
     /** Right child of the current node in the BST. */
     std::unique_ptr<Node> right;
-    /** Up link of the current node. It stores the address of the last node passed from the left. */
+    /** Up link of the current node. It stores the address of the last node passed from the left by the current node.*/
     Node * up;
 
-    /** Default ctor for a Node. (Ctor0)
-    * It leaves uninitialized all the data members of the created Node.
+
+    /** Default Node ctor (Ctor0).
+    * It leaves uninitialized all the data members of the Node.
     */
     Node() {}
 
-    /** Ctor for a Node (Ctor1).
+    /** Node Ctor for a Node (Ctor1).
     * It stores the input key and value into the templated std::pair data and
     * sets both its children  Node * left and the Node * right to nullptr.
     */
@@ -85,7 +97,7 @@ class BST{
 
     /** Ctor for a Node (Ctor2).
     * In addition to initializing the Node members std::pair data, Node * left and the Node * right
-    * it also sets the Node member Node * up.
+    * it also initializes the Node member Node * up.
     */
     Node(const K& k, const V& v, Node * tmp) : data{k,v} , left{nullptr}, right{nullptr}, up{tmp} {
       /*
@@ -104,29 +116,30 @@ class BST{
   std::unique_ptr<Node> root;
 
   /** bool check_eq_keys(const K& a, const K& b) is an auxiliary function which checks whether two nodes are
-  storing the same key. It outputs true if a==b and false otherwise. Please note that the comparison operator
-  may need to be overloaded for some data types for some reason, either of logical or computational nature.
-  In this header file we have already overloaded this function for keys of type double.
-  For this case, the object-like macro TOL set at the beginning of the header file defines the tolerance for the comparison between a and b (that is, fabs(a-b)<TOL ? true : false).
+  storing the same key. It outputs true if a==b and false otherwise. Please read the note to class BST
+  regarding comparison operations.
   */
-  bool check_eq_keys(const K& a, const K& b);
+  bool check_eq_keys(const K& a, const K& b) const noexcept;
 
-  /** void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr) is an auxiliary function which compares the K-type value k with the key of the Node pointed to by tmp.
-  * If k < tmp->data.first and tmp->left == nullptr, the function creates the node tmp->left featuring key
-  * k, value v and Node * up = tmp (case 1).
-  * If k > tmp->data.first and tmp->right == nullptr, the function creates the node tmp->right featuring key
-  * k, value v and Node * up = nullptr (that is the default value for tmpUp) (case 2).
-  * If k == tmp->data.first (actually if check_eq_keys(k, tmp->data.first)==true), the function replaces
-  * tmp->data.second with v and leaves all the other members in the node unaltered (case 3).
-  * If k != tmp->data.first (actually if check_eq_keys(k, tmp->data.first)==false) and tmp->left!=nullptr
-  * (tmp->right!=nullptr), the function calls itself recursively to compare k with tmp->left.data.first
-  * (tmp->right.data.second) until case 1 (2) is reached.
+  /** void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr) is an auxiliary function
+  exploited when populating the tree. It compares the K-type value k with the key of the Node pointed to by tmp.
+   If k < tmp->data.first and tmp->left == nullptr, the function creates the node tmp->left featuring key
+   k, value v and Node * up = tmp (case 1).
+   If k > tmp->data.first and tmp->right == nullptr, the function creates the node tmp->right featuring key
+   k, value v and Node * up = nullptr (that is the default value for tmpUp) (case 2).
+   If k == tmp->data.first (actually if check_eq_keys(k, tmp->data.first)==true), the function replaces
+   tmp->data.second with v and leaves all the other members in the node unaltered (case 3).
+   If k != tmp->data.first (actually if check_eq_keys(k, tmp->data.first)==false) and tmp->left!=nullptr
+   (tmp->right!=nullptr), the function calls itself recursively to compare k with tmp->left.data.first
+   (tmp->right.data.second) until case 1 (2) is reached.
   */
-  void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr);
+  void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr) const noexcept;
 
-  // XXXXXXXXXX To be documented
+  /** T's balance function
+  */
   bool is_bced(Node * loc_root);
 
+  /** Ancillary static variable exploited when calling the copying ctor of BST. */
   static Node * last_up;
 
 
@@ -176,7 +189,7 @@ public:
   * Otherwise, the function makes use of the recursive function cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr) to insert the new node at the right place in the tree.
   * The tree is left unbalanced after the insertion.
   */
-  void insert_node(const K& k, const V& v);
+  void insert_node(const K& k, const V& v) noexcept;
 
   /** populate_tree() reads a variable number N of rows of K V pairs from stdin and creates a tree from scratch
   * having as many nodes as the number of K V pairs. The key (value) in the Nth node inserted is set to the key K(value V) in the Nth line in input.
@@ -260,13 +273,13 @@ public:
 
 
   template<typename K, typename V>
-  bool BST<K,V>::check_eq_keys(const K& a, const K& b){
+  bool BST<K,V>::check_eq_keys(const K& a, const K& b) const noexcept{
     if (a==b) return true;
     else return false;
   }
 
   template<>
-  bool BST<double,double>::check_eq_keys(const double& a, const double& b){
+  bool BST<double,double>::check_eq_keys(const double& a, const double& b) const noexcept{
     if ( fabs(a-b)< TOL ) return true;
     else return false;
   }
@@ -574,7 +587,7 @@ void BST<K,V>::erase_tree() noexcept{
 
 
 template <typename K, typename V>
-void BST<K,V>::insert_node( const K& k, const V& v ){
+void BST<K,V>::insert_node( const K& k, const V& v ) noexcept{
   if (root.get() == nullptr){
     root.reset(new Node{k,v});
   }
@@ -641,7 +654,7 @@ int BST<K,V>::find_key(const K& k){
 }
 
 template <typename K, typename V>
-void BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp){
+void BST<K,V>::cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp) const noexcept{
   if (check_eq_keys(k, tmp->data.first) ){ // to be placed first to take care of == comparison
                                            // for type double variables
     tmp->data.second = v;
