@@ -277,10 +277,11 @@ typename BST<K,V>::Node * BST<K,V>::last_up = nullptr;
   template <typename K, typename V>
   BST<K,V>::Node::Node(const BST<K,V>::Node & old) : data{old.data}, left{nullptr}, right{nullptr}, up{last_up} {
 
-    if(old.right) last_up = this->up;
-    if(old.left)  last_up = this;
+    // if(old.right) last_up = this->up;
+    // if(old.left)  last_up = this;
 
     if (old.left){
+      last_up = this;
       // Node * old_node_l {old.left.get()};
       // left.reset(new Node{*old_node_l});  // recursively call copy constructor
       left.reset(new Node{*old.left.get()});  // recursively call copy constructor
@@ -291,6 +292,7 @@ typename BST<K,V>::Node * BST<K,V>::last_up = nullptr;
     //else left.reset(nullptr);
 
     if (old.right){
+      last_up = this->up;
       // Node * old_node_r {old.right.get()};
       // right.reset(new Node{*old_node_r});  // recursively call copy constructor
       right.reset(new Node{*old.right.get()});  // recursively call copy constructor
