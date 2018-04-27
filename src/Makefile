@@ -15,10 +15,10 @@ TOL=0.000001 # needed to compare two doubles
 
 
 ## COMPILING
-CXX=g++
-CFLAGS=-I $(HEADDIR) -O3  -Wall -Wextra -D TOL=$(TOL)
+CXX= g++
+CFLAGS= -I $(HEADDIR) -O3  -Wall -Wextra -D TOL=$(TOL)
 DBFLAGS= -g -ggdb
-LFLAGS=-std=c++11
+LFLAGS= -std=c++11
 
 ## EXE OBJECTS SOURCES HEADERS
 EXE=$(ROOTDIR)/bst.x
