@@ -33,7 +33,7 @@ $(EXE): $(OBJ)
 	$(CXX) $^ -o $@ $(CFLAGS) $(DBFLAGS) $(LFLAGS)
 
 $(SRCDIR)/%.o: $(SRCDIR)/%.cc $(HEAD)
-	$(CXX) -c $< -o $@ $(CFLAGS) $(DBFLAGS)
+	$(CXX) -c $< -o $@ $(CFLAGS) $(DBFLAGS) $(LFLAGS)
 
 #$(SRCDIR)/bst_main.o: ./include/ap_error.h ./include/bst.h
 
