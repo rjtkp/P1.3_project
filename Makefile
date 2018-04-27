@@ -1,28 +1,77 @@
-# Makefile for BST exam
-EXE=bst.x
-CFLAGS=-I ./include -ggdb -O3  -Wall -Wextra -std=c++11
-CXX=g++
-VPATH=.#:./src
-SRC=bst_main.cc
-OBJ=$(SRC:%.cc=%.o)
+# -*- Makefile -*-
+SHELL=/bin/bash
+ROOTDIR=.
+ESDIR=$(ROOTDIR)/examples
+EXE=./bst.x
 
-default: $(EXE)
+compile:
+	$(MAKE) $(MFLAGS) -C src compile
 
-$(EXE): $(OBJ)
-	$(CXX) $^ -o $@ $(CFLAGS)
+test1:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es1.inp
+test1v:
+	$(MAKE) $(MFLAGS) -C src compile
+	valgrind $(EXE) < $(ESDIR)/es1.inp
 
-%.o: %.cc
-	$(CXX) -c $< -o $@ $(CFLAGS)
+test2:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es2.inp
+test2v:
+	$(MAKE) $(MFLAGS) -C src compile
+	valgrind $(EXE) < $(ESDIR)/es2.inp
 
-bst_main.o: ./include/ap_error.h ./include/bst.h
+test3:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es3.inp
+test3v:
+	$(MAKE) $(MFLAGS) -C src compile
+	valgrind $(EXE) < $(ESDIR)/es3.inp
+
+test4:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es4.inp
+test4v:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es4.inp
+
+test5:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es5.inp
+test5v:
+	$(MAKE) $(MFLAGS) -C src compile
+	valgrind $(EXE) < $(ESDIR)/es5.inp
+
+test6:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es6.inp
+test6v:
+	$(MAKE) $(MFLAGS) -C src compile
+	valgrind $(EXE) < $(ESDIR)/es6.inp
+
+test7:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/es7.inp
+test7v:
+	$(MAKE) $(MFLAGS) -C src compile
+	valgrind $(EXE) < $(ESDIR)/es7.inp
+
+
+test_bal:
+	$(MAKE) $(MFLAGS) -C src compile
+	$(EXE) < $(ESDIR)/balanced1.inp
+test_balv:
+	$(MAKE) $(MFLAGS) -C src compile
+	valgrind $(EXE) < $(ESDIR)/balanced1.inp
+
+bst_doc:
+	$(MAKE) $(MFLAGS) -C src doc
+
+#part1:
+#	$(MAKE) $(MFLAGS) -C src part1
 
 clean:
-	rm -rf ./src/*.o *.o src/*~ include/*~ *~ html latex $(EXE)
+	$(MAKE) $(MFLAGS) -C src clean
+	rm -f ./*~
 
-doc: Doxygen/doxy.in
-	doxygen $^
-
-check:./bst.x
-	./bst.x < examples/es1.inp 
-
-.PHONY: clean doc
+.PHONY: clean default test1 test2 test3 test4 test5 test_bal test1v test2v test3v test4v test5v test_balv doc
