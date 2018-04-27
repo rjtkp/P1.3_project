@@ -12,8 +12,8 @@ int main(){
   /******** CHECKING BST<int, int>, printing, node insertion, balance status ********/
 
   BST<int, int> bst {};
-
   bst.populate_tree(); // read automatically from std::cin
+
   //bst.populate_tree(std::cin) // also works
   //bst.print_tree();
   std::cout << "\n\nbst addresses original\n"<< std::endl;
@@ -25,6 +25,16 @@ int main(){
   bst.populate_tree(iss);
   std::istringstream iss2("73 73");
  iss2>>bst;
+
+ BST<int, int> bst4;
+ BST<int, int> bst5 {bst4};
+ bst4.print_addresses();
+ bst5.print_addresses();
+ bst4.erase_tree();
+
+ std::cout << "\n\nbst4\n"<< bst4<< std::endl;
+ std::cout << "\n\nbst5\n"<< bst5<<std::endl;
+
 
   //std::cout << "\n\ncout bst\n"<< bst<< std::endl;
 
