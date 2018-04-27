@@ -229,7 +229,7 @@ public:
   class Iterator;
 
   /** Iterator begin() returns an iterator to the node storing the smallest key in the tree. */
-  Iterator begin() noexcept; //{
+  Iterator begin()  noexcept; //{
     // Node * tmp {root.get()};
     // if(tmp!=nullptr){
     //   while(tmp->left.get()!=nullptr)
@@ -245,10 +245,10 @@ public:
     */
 
     /** Iterator end() returns an iterator to nullptr, which is the "sentinel node" for the node in the tree storing the greatest key. */
-    Iterator end() noexcept{ return Iterator{nullptr}; };
+    Iterator end()  noexcept{ return Iterator{nullptr}; };
 
     /** Iterator last() returns an iterator to the node storing the greatest key in the tree. */
-    Iterator last() noexcept;
+    Iterator last()  noexcept;
 
     /** ConstIterator on the nodes in the tree. It inherits publicily the data and methods of the Iterator class, which in turns inherits publicily from std::iterator<std::forward_iterator_tag, V>, where V is the data type of the value.
     */
