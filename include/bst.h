@@ -136,9 +136,9 @@ class BST{
   */
   void cmp_key(Node * tmp, const K& k, const V& v, Node * tmpUp = nullptr) const noexcept;
 
-  /** T's balance function
-  */
-  bool is_bced(Node * loc_root);
+  // /** T's balance function
+  // */
+  // bool is_bced(Node * loc_root);
 
   /** Ancillary static variable exploited when calling the copying ctor of BST. */
   static Node * last_up;
@@ -755,26 +755,26 @@ void BST<K,V>::balance_tree2(){
 }
 */
 
-template <typename K, typename V>
-bool BST<K,V>::is_bced(BST<K,V>::Node * loc_root){
-  using ConstIterator = BST<K,V>::ConstIterator;
-  int sx{};
-  int dx{};
-
-  //if(this.cbegin()!=nullptr) //... do error handling!!
-  ConstIterator it_root {loc_root};
-  ConstIterator i=this->cbegin();
-  for (; i!=it_root; ++i)
-    ++sx;
-  //std::cout<<*i<<std::endl;
-  ++i;
-  //std::cout<<*i<<std::endl;
-  for (; i!=this->cend(); ++i)
-    ++dx;
-
-  if( abs(dx-sx) > 1) return false;
-  else return true;
-}
+// template <typename K, typename V>
+// bool BST<K,V>::is_bced(BST<K,V>::Node * loc_root){
+//   using ConstIterator = BST<K,V>::ConstIterator;
+//   int sx{};
+//   int dx{};
+//
+//   //if(this.cbegin()!=nullptr) //... do error handling!!
+//   ConstIterator it_root {loc_root};
+//   ConstIterator i=this->cbegin();
+//   for (; i!=it_root; ++i)
+//     ++sx;
+//   //std::cout<<*i<<std::endl;
+//   ++i;
+//   //std::cout<<*i<<std::endl;
+//   for (; i!=this->cend(); ++i)
+//     ++dx;
+//
+//   if( abs(dx-sx) > 1) return false;
+//   else return true;
+// }
 
 
 
