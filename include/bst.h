@@ -173,11 +173,14 @@ public:
   Node *height_diff(Node * tmp);
   Node *right_rotation(Node * tmp);
   Node *left_rotation(Node * tmp);
-  // Node *balanced_insert(Node *tmp, const K &k, const V &v);
+  Node *balanced_insert(Node *tmp, const K &k, const V &v);
   int print_as_inserted(Node * tmp);
   void balanced_insert(Node * tmp,const std::vector<std::pair<K,V>>& vect, int left_begin, int left_end, int right_begin, int right_end);
-
-
+  void balance_rotation();
+  Node * balanced_insert_rotation(Node *tmp, const K &k, const V &v, Node * tmp1);
+  void delete_single_node(const K & key);
+  Node * delete1(Node * tmp, const K & key);
+  Node * smallest_leaf(Node * node);
   /** Iterator on the nodes in the tree. It inherits publicily the data and methods of
   std::iterator<std::bidirectional_iterator_tag, V>, where V is the data type of the value.
   */
@@ -548,7 +551,7 @@ int BST<K,V>::insert_nodes(std::istream& i_str ){
 
 template <typename K, typename V> int BST<K, V>::find_key(const K &k) {
   Node *tmp{root.get()};
-  find(tmp, k);
+  BST::find(tmp, k);
   return 1;
 }
 
@@ -563,7 +566,7 @@ template <typename K, typename V> int BST<K, V>::find(Node *tmp, const K &k) {
   /** Entering in the left banch from the starting node if not found.*/
   else if (k < tmp->data.first) {
     if (tmp->left == nullptr)
-      std::cout << "key is not present in the tree." << '\n';
+      std::cout << "key is not present in the tree." << k <<'\n';
     else {
       tmp = tmp->left.get();
       BST::find(tmp, k);
@@ -574,7 +577,7 @@ template <typename K, typename V> int BST<K, V>::find(Node *tmp, const K &k) {
   /** Entering in the left banch from the starting node if not found.*/
   else {
     if (tmp->right == nullptr) {
-      std::cout << "key is not present in the tree." << '\n';
+      std::cout << "key is not present in the tree." << k <<'\n';
     } else {
       tmp = tmp->right.get();
       BST::find(tmp, k);
@@ -813,10 +816,10 @@ typename BST<K, V>::Node *BST<K, V>:: left_rotation(Node * tmp){
 }
 
 template <typename K, typename V>
-typename BST<K, V>::Node *BST<K, V>:: balanced_insert_rotation(Node *tmp, const K &k, const V &v){
+typename BST<K, V>::Node *BST<K, V>::balanced_insert_rotation(Node *tmp, const K &k, const V &v, Node * tmp1){
 
     if (tmp == nullptr) {
-      root.reset(new Node{k, v, tmp});
+      tmp = (new Node{k, v, tmp1});
       return tmp;
     }
 
@@ -878,11 +881,87 @@ Node * tmp1{tmp};
 }
 
 template <typename K, typename V> void BST<K, V>::balance_rotation() {
+  std::vector<std::pair<K,V>> vect;
     for (auto i=this->cbegin(); i!=this->cend(); ++i){
-        vect.push_back( std::make_pair(i.get_key(), i.get_value()));
-        tmp = BST::balanced_insert_rotation(tmp, i.get_key(), i.get_value());
+      vect.push_back( std::make_pair(i.get_key(), i.get_value()));
+      // tmp = BST::balanced_insert_rotation(tmp, i.get_key(), i.get_value());
+    }
+    Node * old_root{root.get()};
+    root.reset(new Node{vect[0].first, vect[0].second, nullptr});
+    Node * tmp{root.get()};
+    for (auto i = 1; i < vect.size(); i++) {
+      tmp = BST::balanced_insert_rotation(tmp, vect[i].first,vect[i].second, nullptr);
     }
 }
+
+
+
+template <typename K, typename V>
+typename BST<K, V>::Node *BST<K, V>::delete1(Node * tmp, const K & key) {
+  if (tmp == nullptr) return tmp;
+
+  if (key < tmp->data.first)
+     tmp->left.reset(BST::delete1(tmp->left.get(), key));
+  else if (key > tmp->data.first)
+     tmp->right.reset(BST::delete1(tmp->right.get(), key));
+  else{
+        //node has no child
+        if(tmp->left == nullptr && tmp->right == nullptr){
+            tmp = nullptr;
+        }
+        else if(tmp->left == nullptr){
+            tmp = tmp->right.get();
+        }
+        else if(tmp->right == nullptr){
+            tmp = tmp->left.get();
+        }
+        else{
+            Node *temp = smallest_leaf(tmp->right.get());
+            tmp->data = temp->data;
+            // tmp->up = temp->up;
+            // tmp->left.reset(temp->left.get());
+            // tmp = temp;
+            tmp->right.reset(delete1(tmp->right.get() , temp->data.first));
+        }
+
+    }
+
+ //    if (tmp->left == nullptr){
+ //      Node *temp{tmp->right.get()};
+ //      tmp = nullptr;
+ //      return temp;
+ //    }
+ //    else if (tmp->right == nullptr){
+ //      Node *temp{tmp->left.get()};
+ //      tmp = nullptr;
+ //      return temp;
+ //    }
+ //
+ //    Node * temp{BST::smallest_leaf(tmp->right.get())};
+ //
+ //    tmp->data.first = temp->data.first;
+ //    tmp->data.second = temp->data.second;
+ //
+ //    tmp->right.reset(BST::delete1(tmp->right.get(), temp->data.first));
+ // }
+ return tmp;
+}
+
+template <typename K, typename V>
+typename BST<K, V>::Node *BST<K, V>::smallest_leaf(Node * tmp){
+
+    if(tmp->left == nullptr)
+        return tmp;
+
+    return smallest_leaf(tmp->left.get());
+}
+
+template <typename K, typename V> void BST<K, V>::delete_single_node(const K & key) {
+  Node * tmp{root.get()};
+  BST::delete1(tmp, key);
+}
+
+
 
 
 #endif

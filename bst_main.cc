@@ -15,9 +15,32 @@ int main(){
   bst.populate_tree(); // read automatically from std::cin
   //bst.populate_tree(std::cin) // also works
   bst.print_tree();
-  bst.balance();
+  // bst.balance();
   bst.isBalanced();
   bst.print_tree();
+  bst.find_key(2);
+  // bst.isBalanced();
+  bst.delete_single_node(2);
+  // bst.balance();
+  bst.isBalanced();
+  bst.find_key(2);
+  bst.print_tree();
+  // bst.isBalanced();
+  // bst.find_key(2);
+  // bst.delete_single_node(2);
+  // bst.find_key(2);
+  // bst.isBalanced();
+  // bst.find_key(3);
+  // bst.delete_single_node(1);
+  // bst.find_key(1);
+  // bst.isBalanced();
+  // bst.find_key(4);
+  // bst.isBalanced();
+  // bst.delete_single_node(5);
+  // bst.find_key(1);
+  // bst.find_key(5);
+  // bst.isBalanced();
+
 
 
   // bst.balance_tree();
@@ -96,11 +119,6 @@ int main(){
 //
 // /******* CHECKING FIND & MAX ********/
 //   bst = bst4;
-//   bst.find_key(1);
-//   bst.find_key(2);
-//   bst.find_key(3);
-//   bst.find_key(4);
-//   bst.find_key(5);
 //   bst.max(11,12);
 //   std::cout <<"the bigger one is:" << bst.max(11,12) << '\n';
 //   bst.isBalanced( );
