@@ -437,31 +437,51 @@ return i;
 template <typename K, typename V>
 class BST<K,V>::Iterator : public std::iterator<std::forward_iterator_tag, V> {
   using Node =  BST<K,V>::Node;
+
+  /** current stores the pointer to the current node in the tree currently handled by the iterator.*/
   Node* current;
 
 
   public:
+    /** Default ctor for BST::Iterator*/
     Iterator() {}
+
+    /**Secondary ctor for iterator. It initializes current to the input pointer to node n*/
     Iterator(Node* n) : current{n} {}
+
+    /**Deference operator. It returns a reference to the value v stored in the pair of node current.
+        It throws an exception if current == nullptr*/
     V& operator*() const {
       if(current == nullptr) {
         AP_error("Trying to dereference nullptr!");
       }
       return current->data.second;
     }
+
+    /** It returns a reference to the key stored in the pair of node current.
+    An exception is thrown if current==nullptr. */
     K& get_key() const {
       if(!current) {
         AP_error("Trying to read data from nullptr!");
       }
       return current->data.first;
     }
+
+    /**It returns the address of the current node.*/
     Node *  get_address() const noexcept{ return current; }
+
+    /**It returns the address of the up pointer stored into the current node.*/
     Node *  get_up() const noexcept{ return current->up; }
+    /**It sets current to the input pointer curr. */
     void set_current( Node * curr) noexcept {current=curr;}
+    /**It returns a pointer to the leftmost node wrt current, i.e. the last non-nullptr node
+  you land on if you visit recursively the "left children" of current->left.
+  If start has no left child, start itself is returned.*/
     Node * get_leftmost (Node * start) const noexcept;
+    /** Analogous to get_leftmost, with the replacement left-->right*/
     Node * get_rightmost (Node * start) const noexcept;
 
-    // ++it
+    /**Pre-increment operator, which updates current to the next greatest node in the tree and returns the *current* iterator.*/
     Iterator& operator++() {  // now take care of issues when calling operator++
       // on the node having the greatest key!
       if(!current){
@@ -478,13 +498,15 @@ class BST<K,V>::Iterator : public std::iterator<std::forward_iterator_tag, V> {
       return *this;
     }
 
-    Iterator operator++(int) {  // now take care of issues when calling operator++
+    /**Pre-increment operator, which updates current to the next greatest node in the tree and returns the updated *current* iterator.*/
+    Iterator operator++(int) {
       // on the node having the greatest key!
       Iterator it{current};
       ++(*this);
       return it;
     }
 
+/**Equality operator: It returns true if the compared iterators are holding the same node.*/
     bool operator==(const Iterator& other) const noexcept {
       return this->current == other.current;
     }
@@ -495,6 +517,7 @@ class BST<K,V>::Iterator : public std::iterator<std::forward_iterator_tag, V> {
   }
   */
 
+  /**Inequality operator: It returns true if the compared iterators are *not* holding the same node.*/
     bool operator!=(const Iterator& other) const noexcept { return !(*this == other); }
 
 
