@@ -181,6 +181,8 @@ public:
   void delete_single_node(const K & key);
   Node * delete1(Node * tmp, const K & key);
   Node * smallest_leaf(Node * node);
+  Node * largest_leaf(Node * node);
+  Node * fix_it(Node * tmp, const K & key);
   /** Iterator on the nodes in the tree. It inherits publicily the data and methods of
   std::iterator<std::bidirectional_iterator_tag, V>, where V is the data type of the value.
   */
@@ -894,7 +896,35 @@ template <typename K, typename V> void BST<K, V>::balance_rotation() {
     }
 }
 
-
+template <typename K, typename V>
+typename BST<K, V>::Node *BST<K, V>::fix_it(Node * tmp, const K & key){
+  //node has no child
+  if(tmp->left == nullptr && tmp->right == nullptr){
+      tmp = nullptr;
+  }
+  else if(tmp->left == nullptr){
+      tmp = tmp->right.get();
+  }
+  else if(tmp->right == nullptr){
+      tmp = tmp->left.get();
+  }
+  else{
+      Node *temp = BST::smallest_leaf(tmp->left.get());
+      Node *temp1 = BST::largest_leaf(tmp->right.get());
+      std::vector<std::pair<K,V>> vect;
+      for (auto i = temp; i!= temp1; ++i){
+        if (i->data.first != key) {
+          vect.push_back( std::make_pair(i->data.first, i->data.second));
+        }
+      }
+      tmp = (new Node{vect[vect.size()/2].first, vect[vect.size()/2].second, tmp->up});
+      for (size_t i = 0; i < vect.size(); i++) {
+        std::cout << vect[i].first, vect[i].second  << '\n';
+        BST::balanced_insert(tmp, vect, 0, vect.size()/2, vect.size()/2 + 1, vect.size());
+      }
+  }
+  return tmp;
+}
 
 template <typename K, typename V>
 typename BST<K, V>::Node *BST<K, V>::delete1(Node * tmp, const K & key) {
@@ -905,45 +935,8 @@ typename BST<K, V>::Node *BST<K, V>::delete1(Node * tmp, const K & key) {
   else if (key > tmp->data.first)
      tmp->right.reset(BST::delete1(tmp->right.get(), key));
   else{
-        //node has no child
-        if(tmp->left == nullptr && tmp->right == nullptr){
-            tmp = nullptr;
-        }
-        else if(tmp->left == nullptr){
-            tmp = tmp->right.get();
-        }
-        else if(tmp->right == nullptr){
-            tmp = tmp->left.get();
-        }
-        else{
-            Node *temp = smallest_leaf(tmp->right.get());
-            tmp->data = temp->data;
-            // tmp->up = temp->up;
-            // tmp->left.reset(temp->left.get());
-            // tmp = temp;
-            tmp->right.reset(delete1(tmp->right.get() , temp->data.first));
-        }
-
+      tmp = BST::fix_it(tmp, key);
     }
-
- //    if (tmp->left == nullptr){
- //      Node *temp{tmp->right.get()};
- //      tmp = nullptr;
- //      return temp;
- //    }
- //    else if (tmp->right == nullptr){
- //      Node *temp{tmp->left.get()};
- //      tmp = nullptr;
- //      return temp;
- //    }
- //
- //    Node * temp{BST::smallest_leaf(tmp->right.get())};
- //
- //    tmp->data.first = temp->data.first;
- //    tmp->data.second = temp->data.second;
- //
- //    tmp->right.reset(BST::delete1(tmp->right.get(), temp->data.first));
- // }
  return tmp;
 }
 
@@ -956,9 +949,25 @@ typename BST<K, V>::Node *BST<K, V>::smallest_leaf(Node * tmp){
     return smallest_leaf(tmp->left.get());
 }
 
-template <typename K, typename V> void BST<K, V>::delete_single_node(const K & key) {
+template <typename K, typename V>
+typename BST<K, V>::Node *BST<K, V>::largest_leaf(Node * tmp){
+
+    if(tmp->right == nullptr)
+        return tmp;
+
+    return largest_leaf(tmp->right.get());
+}
+
+template <typename K, typename V>
+void BST<K, V>::delete_single_node(const K & key) {
   Node * tmp{root.get()};
-  BST::delete1(tmp, key);
+  if (BST::find_key(key)) {
+    delete1(tmp, key);
+  }
+  else{
+    std::cout << "Key is not present in the tree" << key << '\n';
+  }
+  // BST::delete1(tmp, key);
 }
 
 

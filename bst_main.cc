@@ -15,16 +15,17 @@ int main(){
   bst.populate_tree(); // read automatically from std::cin
   //bst.populate_tree(std::cin) // also works
   bst.print_tree();
-  // bst.balance();
+  bst.balance();
   bst.isBalanced();
-  bst.print_tree();
-  bst.find_key(2);
+  // bst.print_tree();
+  bst.find_key(5);
   // bst.isBalanced();
-  bst.delete_single_node(2);
+  bst.delete_single_node(5);
   // bst.balance();
-  bst.isBalanced();
-  bst.find_key(2);
   bst.print_tree();
+  bst.find_key(5);
+  // bst.isBalanced();
+  // bst.print_tree();
   // bst.isBalanced();
   // bst.find_key(2);
   // bst.delete_single_node(2);
