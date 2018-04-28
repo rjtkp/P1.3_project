@@ -20,7 +20,7 @@ int main(){
   // bst.print_tree();
   bst.find_key(5);
   // bst.isBalanced();
-  bst.delete_single_node(5);
+  bst.del(5);
   // bst.balance();
   bst.print_tree();
   bst.find_key(5);

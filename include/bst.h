@@ -179,7 +179,7 @@ public:
   void balance_rotation();
   Node * balanced_insert_rotation(Node *tmp, const K &k, const V &v, Node * tmp1);
   void delete_single_node(const K & key);
-  Node * delete1(Node * tmp, const K & key);
+  void del(const K & key);
   Node * smallest_leaf(Node * node);
   Node * largest_leaf(Node * node);
   Node * fix_it(Node * tmp, const K & key);
@@ -817,42 +817,42 @@ typename BST<K, V>::Node *BST<K, V>:: left_rotation(Node * tmp){
   return r;
 }
 
-template <typename K, typename V>
-typename BST<K, V>::Node *BST<K, V>::balanced_insert_rotation(Node *tmp, const K &k, const V &v, Node * tmp1){
-
-    if (tmp == nullptr) {
-      tmp = (new Node{k, v, tmp1});
-      return tmp;
-    }
-
-    if (k < tmp->data.first)
-        tmp->left.reset(balanced_insert_rotation(tmp->left.get(), k, v));
-    else if (k > tmp->data.first)
-        tmp->right.reset(balanced_insert_rotation(tmp->right.get(), k, v));
-    else
-        return tmp;
-    // BST::insert_node(k,v);
-    // tmp = root.get();
-
-    int diff = height_differnce(tmp);
-
-    if (diff > 1 && k < tmp->left->data.first)
-        return right_rotation(tmp);
-
-    if (diff < -1 && k > tmp->right->data.first)
-        return left_rotation(tmp);
-
-    if (diff > 1 && k > tmp->left->data.first){
-        tmp->left.reset(left_rotation(tmp->left.get()));
-        return right_rotation(tmp);
-    }
-
-    if (diff < -1 && k < tmp->right->data.first){
-        tmp->right.reset(right_rotation(tmp->right.get()));
-        return left_rotation(tmp);
-    }
-    return tmp;
-}
+// template <typename K, typename V>
+// typename BST<K, V>::Node *BST<K, V>::balanced_insert_rotation(Node *tmp, const K &k, const V &v, Node * tmp1){
+//
+//     if (tmp == nullptr) {
+//       tmp = (new Node{k, v, tmp1});
+//       return tmp;
+//     }
+//
+//     if (k < tmp->data.first)
+//         tmp->left.reset(balanced_insert_rotation(tmp->left.get(), k, v));
+//     else if (k > tmp->data.first)
+//         tmp->right.reset(balanced_insert_rotation(tmp->right.get(), k, v));
+//     else
+//         return tmp;
+//     // BST::insert_node(k,v);
+//     // tmp = root.get();
+//
+//     int diff = height_differnce(tmp);
+//
+//     if (diff > 1 && k < tmp->left->data.first)
+//         return right_rotation(tmp);
+//
+//     if (diff < -1 && k > tmp->right->data.first)
+//         return left_rotation(tmp);
+//
+//     if (diff > 1 && k > tmp->left->data.first){
+//         tmp->left.reset(left_rotation(tmp->left.get()));
+//         return right_rotation(tmp);
+//     }
+//
+//     if (diff < -1 && k < tmp->right->data.first){
+//         tmp->right.reset(right_rotation(tmp->right.get()));
+//         return left_rotation(tmp);
+//     }
+//     return tmp;
+// }
 
 template <typename K, typename V> void BST<K, V>::balance() {
     std::vector<std::pair<K,V>> vect;
@@ -882,18 +882,18 @@ Node * tmp1{tmp};
   }
 }
 
-template <typename K, typename V> void BST<K, V>::balance_rotation() {
+template <typename K, typename V> void BST<K, V>::del(const K & key) {
   std::vector<std::pair<K,V>> vect;
-    for (auto i=this->cbegin(); i!=this->cend(); ++i){
+  for (auto i=this->cbegin(); i!=this->cend(); ++i){
+    if (i.get_key() != key) {
       vect.push_back( std::make_pair(i.get_key(), i.get_value()));
       // tmp = BST::balanced_insert_rotation(tmp, i.get_key(), i.get_value());
     }
-    Node * old_root{root.get()};
-    root.reset(new Node{vect[0].first, vect[0].second, nullptr});
-    Node * tmp{root.get()};
-    for (auto i = 1; i < vect.size(); i++) {
-      tmp = BST::balanced_insert_rotation(tmp, vect[i].first,vect[i].second, nullptr);
-    }
+  }
+  // root.reset(tmp);
+  root.reset(new Node{vect[vect.size()/2].first, vect[vect.size()/2].second, nullptr});
+  Node * tmp{root.get()};
+  BST::balanced_insert(tmp, vect, 0, vect.size()/2, vect.size()/2 + 1, vect.size());
 }
 
 template <typename K, typename V>
@@ -926,19 +926,19 @@ typename BST<K, V>::Node *BST<K, V>::fix_it(Node * tmp, const K & key){
   return tmp;
 }
 
-template <typename K, typename V>
-typename BST<K, V>::Node *BST<K, V>::delete1(Node * tmp, const K & key) {
-  if (tmp == nullptr) return tmp;
-
-  if (key < tmp->data.first)
-     tmp->left.reset(BST::delete1(tmp->left.get(), key));
-  else if (key > tmp->data.first)
-     tmp->right.reset(BST::delete1(tmp->right.get(), key));
-  else{
-      tmp = BST::fix_it(tmp, key);
-    }
- return tmp;
-}
+// template <typename K, typename V>
+// typename BST<K, V>::Node *BST<K, V>::delete1(Node * tmp, const K & key) {
+//   if (tmp == nullptr) return tmp;
+//
+//   if (key < tmp->data.first)
+//      tmp->left.reset(BST::delete1(tmp->left.get(), key));
+//   else if (key > tmp->data.first)
+//      tmp->right.reset(BST::delete1(tmp->right.get(), key));
+//   else{
+//       tmp = BST::fix_it(tmp, key);
+//     }
+//  return tmp;
+// }
 
 template <typename K, typename V>
 typename BST<K, V>::Node *BST<K, V>::smallest_leaf(Node * tmp){
@@ -958,17 +958,17 @@ typename BST<K, V>::Node *BST<K, V>::largest_leaf(Node * tmp){
     return largest_leaf(tmp->right.get());
 }
 
-template <typename K, typename V>
-void BST<K, V>::delete_single_node(const K & key) {
-  Node * tmp{root.get()};
-  if (BST::find_key(key)) {
-    delete1(tmp, key);
-  }
-  else{
-    std::cout << "Key is not present in the tree" << key << '\n';
-  }
-  // BST::delete1(tmp, key);
-}
+// template <typename K, typename V>
+// void BST<K, V>::delete_single_node(const K & key) {
+//   Node * tmp{root.get()};
+//   // if (BST::find_key(key)) {
+//     delete1(tmp, key);
+//   // }
+//   // else{
+//   //   std::cout << "Key is not present in the tree" << key << '\n';
+//   // }
+//   // BST::delete1(tmp, key);
+// }
 
 
 
