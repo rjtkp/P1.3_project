@@ -31,6 +31,7 @@ Class PostcardList must manage the sorting of dates/senders/receivers. Note that
 
 import unittest
 import datetime  # use this module to deal with dates:  https://docs.python.org/3/library/datetime.html
+import operator
 
 class PostcardList(object):
     """
@@ -57,7 +58,7 @@ class PostcardList(object):
         with open(self._file, 'r') as f:
             self._postcards= f.readlines()
         self.parsePostcards() #update_records
-        return "Successfully read " + filename + ".\nUpdated self._postcards and set self.{_date,_from,_to}."
+        #return "Successfully read " + filename + ".\nUpdated self._postcards and set self.{_date,_from,_to}."
 
     def getNumberOfPostcards(self):
         return len(self._postcards)
@@ -71,7 +72,7 @@ class PostcardList(object):
         with open(self._file, 'r') as f:
             self._postcards.extend(f.readlines())
         self.parsePostcards(self._offset) #update_records
-        return "Successfully read " + filename + ".\nUpdated self._postcards and set self.{_date,_from,_to}."
+        #return "Successfully read " + filename + ".\nUpdated self._postcards and set self.{_date,_from,_to}."
 
 #parsePostcards
     def parsePostcards(self):
@@ -97,21 +98,39 @@ class PostcardList(object):
 
 # get by daterange
     def getPostcardsByDateRange(self, date_range):
-        filtDate= { k:v for (k,v) in self._date.items() \
-                   if datetime.datetime.strptime(k, "%Y-%m-%d")> date_range[0] \
-                   and datetime.datetime.strptime(k, "%Y-%m-%d") < date_range[1] }
-        return [ self._postcards[i] for i in iter(*filtDate.values()) ]
+        ret = []
+        for k,v in self._date.items():
+            d= datetime.datetime.strptime(k, "%Y-%m-%d")
+            #print(k, "", v)
+            if d>date_range[0] and d<date_range[1]:
+                for i in v:
+                    ret.append(self._postcards[i])
+        return ret
+
+
 # get by sender
     def getPostcardsBySender(self, sender):
-        filtSender= { k:v for (k,v) in self._from.items() \
-                   if k==sender}
-        return [ self._postcards[i] for i in iter(*filtSender.values()) ]
+        ret = []
+        for k,v in self._from.items():
+            #print(k, "", v)
+            if k==sender:
+                for i in v:
+                    ret.append(self._postcards[i])
+        return ret
 
 # get by receiver
     def getPostcardsByReceiver(self, receiver):
-        filtReceiver= { k:v for (k,v) in self._to.items() \
-                   if k==receiver}
-        return [ self._postcards[i] for i in iter(*filtReceiver.values()) ]
+        ret = []
+        for k,v in self._to.items():
+            #print(k, "", v)
+            if k==receiver:
+                for i in v:
+                    ret.append(self._postcards[i])
+        return ret
+
+
+
+
 
 ########################
 # TO COMMENT
