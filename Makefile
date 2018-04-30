@@ -77,6 +77,7 @@ clean:
 	rm -f ./*~
 
 postcards:
-	$(PYTHON) ./python/exam_requests.py
+	$(MAKE) $(MFLAGS) -C python postcards
+
 
 .PHONY: clean default test1 test2 test3 test4 test5 test_bal test1v test2v test3v test4v test5v test_balv doc postcards

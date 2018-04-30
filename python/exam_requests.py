@@ -52,7 +52,8 @@ class PostcardList(object):
         return print_PL
 
 # readFile_
-    def readFile(self):
+    def readFile(self, filename):
+        self._file = filename
         with open(self._file, 'r') as f:
             self._postcards= f.readlines()
         self.parsePostcards() #update_records
@@ -64,7 +65,8 @@ class PostcardList(object):
 
 
 # updateLists (update self._postcards)
-    def updateLists(self):
+    def updateLists(self, filename):
+        self._file = filename
         self._offset =self.getNumberOfPostcards()
         with open(self._file, 'r') as f:
             self._postcards.extend(f.readlines())
@@ -82,12 +84,14 @@ class PostcardList(object):
 
 
 # writeFile
-    def writeFile(self):
+    def writeFile(self, filename):
+        self._file = filename
         with open(self._file, 'w') as f:
             f.writelines(self._postcards)
 
 # updateFile
-    def updateFile(self):
+    def updateFile(self, filename):
+        self._file = filename
         with open(self._file, 'a') as f:
             f.writelines(self._postcards[self._offset:])
 
