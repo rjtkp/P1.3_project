@@ -95,7 +95,7 @@ class PostcardList(object):
     def getPostcardsByDateRange(self, date_range):
         filtDate= { k:v for (k,v) in self._date.items() \
                    if datetime.datetime.strptime(k, "%Y-%m-%d")> date_range[0] \
-                   if datetime.datetime.strptime(k, "%Y-%m-%d") < date_range[1] }
+                   and datetime.datetime.strptime(k, "%Y-%m-%d") < date_range[1] }
         return [ self._postcards[i] for i in iter(*filtDate.values()) ]
 # get by sender
     def getPostcardsBySender(self, sender):
