@@ -4,6 +4,8 @@ ROOTDIR=.
 ESDIR=$(ROOTDIR)/examples
 EXE=./bst.x
 
+PYTHON=python3.4 # python 3.4 (on ulysses)
+
 compile:
 	$(MAKE) $(MFLAGS) -C src compile
 
@@ -74,4 +76,8 @@ clean:
 	$(MAKE) $(MFLAGS) -C src clean
 	rm -f ./*~
 
-.PHONY: clean default test1 test2 test3 test4 test5 test_bal test1v test2v test3v test4v test5v test_balv doc
+postcards:
+	$(MAKE) $(MFLAGS) -C python postcards
+
+
+.PHONY: clean default test1 test2 test3 test4 test5 test_bal test1v test2v test3v test4v test5v test_balv doc postcards
